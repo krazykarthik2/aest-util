@@ -1,0 +1,8 @@
+.typing-page{
+    .word.before-diff-true{
+        margin-left:0 !important;
+    }
+    .word.after-diff-true{
+        margin-right:0 !important;
+    }
+}

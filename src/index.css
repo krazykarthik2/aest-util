@@ -1,8 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-bg: #000000;
+  --secondary-bg: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --accent-color: #61dafb;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  @apply bg-terminal-black text-terminal-white font-mono min-h-screen m-0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +19,37 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.terminal-container {
+  @apply bg-terminal-gray rounded-lg p-4 shadow-lg;
+}
+
+.terminal-input {
+  @apply bg-transparent border-none outline-none text-terminal-white w-full font-mono;
+}
+
+.terminal-prompt {
+  @apply text-terminal-accent font-bold mr-2;
+}
+
+.status-bar {
+  @apply fixed top-0 left-0 right-0 bg-terminal-gray p-2 flex justify-between items-center shadow-lg z-50;
+}
+
+.info-bar {
+  @apply fixed bottom-0 left-0 right-0 bg-terminal-gray p-2 flex justify-between items-center shadow-lg z-50;
+}
+
+.clock {
+  @apply fixed top-4 right-4 bg-terminal-gray rounded-lg p-2 shadow-lg flex items-center z-40;
+}
+
+@layer utilities {
+  .d-center{
+    @apply flex items-center justify-center;
+  }
+  .stack{
+    @apply flex flex-col;
+  }
 }

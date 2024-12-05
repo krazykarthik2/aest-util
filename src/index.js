@@ -1,13 +1,38 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { storePromise } from './redux/store';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Create a StoreProvider component that waits for the store
+const StoreProvider = ({ children }) => {
+  const [store, setStore] = React.useState(null);
+
+  React.useEffect(() => {
+    storePromise.then(setStore);
+  }, []);
+
+  if (!store) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-terminal-black">
+        <div className="text-terminal-accent animate-pulse">
+          Initializing...
+        </div>
+      </div>
+    );
+  }
+
+  return <Provider store={store}>{children}</Provider>;
+};
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <StoreProvider>
+      <App />
+    </StoreProvider>
   </React.StrictMode>
 );
 
