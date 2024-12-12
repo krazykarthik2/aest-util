@@ -26,6 +26,9 @@ const Terminal = () => {
       case 'qr':
         navigate('/qr');
         break;
+      case 'state':
+        navigate('/state');
+        break;
       case 'type':
         navigate('/typing');
         break;

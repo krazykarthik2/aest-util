@@ -28,11 +28,14 @@ export const typingSlice = createSlice({
     },
     setCapitalization: (state, action) => {
       state.preferences.typing.typesetting.capitalize = action.payload;
+    },
+    silentUpdateState: (state, action) => {
+      return { ...state, ...action.payload };
     }
   }
 });
 
-export const { setTimeLimit, setPunctuation, setNumbers, setCapitalization } = typingSlice.actions;
+export const { setTimeLimit, setPunctuation, setNumbers, setCapitalization, silentUpdateState } = typingSlice.actions;
 
 export const selectTypingSettings = (state) => state.user.preferences.typing.typesetting;
 

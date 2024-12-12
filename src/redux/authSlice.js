@@ -1,7 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { openDB } from 'idb';
+import {loadPersistedState} from './persistMiddleware';
 const API_URL = process.env.REACT_APP_API_URL;
+
+const initialState = {
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  loading: false,
+  error: null,
+  totpRequired: false,
+  totpEnabled: false,
+  totpEnabling: false,
+  totpError: null,
+  freshState: null
+};
 
 // Async thunks for authentication
 export const signup = createAsyncThunk(
@@ -18,7 +33,7 @@ export const signup = createAsyncThunk(
 
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password, totp }, { rejectWithValue }) => {
+  async ({ email, password, totp }, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, {
         email,
@@ -35,16 +50,9 @@ export const login = createAsyncThunk(
       // Store token in localStorage
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      // Return a plain object with only the data we need
-      return {
-        token,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name || user.email.split('@')[0]
-        }
-      };
+
+
+      return { token, user };
     } catch (error) {
       if (error.response?.data) {
         return rejectWithValue(error.response.data);
@@ -56,22 +64,24 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk(
   'auth/logout',
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch }) => {
     try {
-      // Clear token from axios defaults
+      // Clear token
+      localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
       
-      // Clear token from localStorage
-      localStorage.removeItem('token');
+      // Clear IndexedDB state on logout
+      const db = await openDB('aest-util-store', 1);
+      await db.clear('redux-store');
       
       return null;
     } catch (error) {
-      return rejectWithValue(error.message);
+      console.error('Logout error:', error);
+      return null;
     }
   }
 );
 
-// Check if user is already logged in
 export const checkAuth = createAsyncThunk(
   'auth/check',
   async (_, { rejectWithValue }) => {
@@ -79,14 +89,10 @@ export const checkAuth = createAsyncThunk(
       const token = localStorage.getItem('token');
       if (!token) return null;
 
-      // Set the token in axios defaults
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      // Verify token with backend (optional)
       const response = await axios.get(`${API_URL}/auth/verify`);
-      return response.data;
+      return { token, user: response.data.user };
     } catch (error) {
-      // If token is invalid, clear it
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
       return rejectWithValue(error.response?.data || error.message);
@@ -94,7 +100,6 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
-// Add TOTP enable thunk
 export const enableTotp = createAsyncThunk(
   'auth/enableTotp',
   async (totp, { rejectWithValue }) => {
@@ -108,23 +113,6 @@ export const enableTotp = createAsyncThunk(
   }
 );
 
-const initialState = {
-  user: {
-    id: null,
-    email: null,
-    name: null
-  },
-  token: null,
-  isAuthenticated: false,
-  loading: false,
-  error: null,
-  totpRequired: false,
-  totpEnabled: false,
-  totpEnabling: false,
-  totpError: null,
-  freshState: null
-};
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -132,103 +120,52 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    clearFreshState: (state) => {
-      state.freshState = null;
-    },
     setFreshState: (state, action) => {
       state.freshState = action.payload;
+    },
+    clearFreshState: (state) => {
+      state.freshState = null;
     }
   },
   extraReducers: (builder) => {
     builder
-      // Signup
-      .addCase(signup.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(signup.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(signup.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Signup failed';
-      })
-      
-      // Login
+      // Login cases
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.totpRequired = false;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        state.user = {
-          id: action.payload.user.id,
-          email: action.payload.user.email,
-          name: action.payload.user.name || action.payload.user.email.split('@')[0] // Fallback to email username if name not provided
-        };
+        state.user = action.payload.user;
         state.token = action.payload.token;
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.isAuthenticated = false;
-        state.user = {
-          id: null,
-          email: null,
-          name: null
-        };
-        state.token = null;
-        // Ensure error is a plain object
-        state.error = typeof action.payload === 'string' 
-          ? { message: action.payload }
-          : action.payload || { message: 'Login failed' };
-        state.totpRequired = action.payload?.totpRequired || false;
+        state.error = action.payload?.message || 'Login failed';
+        if (action.payload?.totpRequired) {
+          state.totpRequired = true;
+        }
       })
-      
-      // Logout
+      // Logout cases
       .addCase(logout.fulfilled, (state) => {
-        state.user = {
-          id: null,
-          email: null,
-          name: null
-        };
-        state.token = null;
-        state.isAuthenticated = false;
-        state.totpRequired = false;
-        state.loading = false;
-        state.freshState = null;
+        return initialState;
       })
-      
-      // Check Auth
-      .addCase(checkAuth.pending, (state) => {
-        state.loading = true;
-      })
+      // Check auth cases
       .addCase(checkAuth.fulfilled, (state, action) => {
-        state.loading = false;
         if (action.payload) {
           state.isAuthenticated = true;
-          state.user = {
-            id: action.payload.user.id,
-            email: action.payload.user.email,
-            name: action.payload.user.name || action.payload.user.email.split('@')[0] // Fallback to email username if name not provided
-          };
-          state.token = localStorage.getItem('token');
+          state.user = action.payload.user;
+          state.token = action.payload.token;
+        } else {
+          return initialState;
         }
       })
       .addCase(checkAuth.rejected, (state) => {
-        state.loading = false;
-        state.isAuthenticated = false;
-        state.user = {
-          id: null,
-          email: null,
-          name: null
-        };
-        state.token = null;
+        return initialState;
       })
-      
-      // Enable TOTP
+      // Enable TOTP cases
       .addCase(enableTotp.pending, (state) => {
         state.totpEnabling = true;
         state.totpError = null;
@@ -242,20 +179,21 @@ const authSlice = createSlice({
         state.totpEnabling = false;
         state.totpError = action.payload?.message || 'Failed to enable TOTP';
       });
-  },
+  }
 });
 
-export const { clearError, clearFreshState, setFreshState } = authSlice.actions;
+export const { clearError, setFreshState, clearFreshState } = authSlice.actions;
 
-export const selectAuth = (state) => state.auth;
-export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
-export const selectUser = (state) => state.auth.user;
-export const selectAuthLoading = (state) => state.auth.loading;
-export const selectAuthError = (state) => state.auth.error;
-export const selectTotpRequired = (state) => state.auth.totpRequired;
-export const selectTotpEnabled = (state) => state.auth.totpEnabled;
-export const selectTotpEnabling = (state) => state.auth.totpEnabling;
-export const selectTotpError = (state) => state.auth.totpError;
-export const selectFreshState = (state) => state.auth.freshState;
+// Selectors
+export const selectAuth = state => state.auth;
+export const selectIsAuthenticated = state => state.auth.isAuthenticated;
+export const selectUser = state => state.auth.user;
+export const selectAuthLoading = state => state.auth.loading;
+export const selectAuthError = state => state.auth.error;
+export const selectTotpRequired = state => state.auth.totpRequired;
+export const selectTotpEnabled = state => state.auth.totpEnabled;
+export const selectTotpEnabling = state => state.auth.totpEnabling;
+export const selectTotpError = state => state.auth.totpError;
+export const selectFreshState = state => state.auth.freshState;
 
 export default authSlice.reducer;

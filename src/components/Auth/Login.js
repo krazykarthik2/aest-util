@@ -57,6 +57,7 @@ const Login = () => {
           onChange={handleChange}
           className="w-full p-2 rounded bg-terminal-black text-terminal-white border border-terminal-accent focus:outline-none focus:border-terminal-accent"
           required
+          autoFocus
           disabled={loading}
         />
       </div>

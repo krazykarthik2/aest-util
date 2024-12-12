@@ -1,76 +1,73 @@
-import { openDB } from 'idb';
-import axios from 'axios';
-import _ from 'lodash';
+import { openDB } from "idb";
+import axios from "axios";
+import _ from "lodash";
+import { checkAuth } from "./authSlice";
 
-// Get the backend URL from environment variables
 const BACKEND_URL = process.env.REACT_APP_API_URL;
-console.log('Backend URL:', BACKEND_URL);
-console.log('All env vars:', process.env);
+const DB_NAME = "aest-util-store";
+const STORE_NAME = "redux-store";
 
 // Initialize IndexedDB
 const initDB = async () => {
-  return openDB('aest-util-store', 1, {
+  return openDB(DB_NAME, 1, {
     upgrade(db) {
-      if (!db.objectStoreNames.contains('redux-store')) {
-        db.createObjectStore('redux-store');
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
       }
     },
   });
 };
 
 // Load the persisted state
-export const loadPersistedState = async () => {
+export const loadPersistedState = async (__token) => {
+  console.log("Loading persisted state...");
   try {
-    // First try to load from IndexedDB
     const db = await initDB();
-    const state = await db.get('redux-store', 'latest');
-    
-    if (state) {
-      // Initialize auth state as empty since it's managed separately
-      return {
-        ...state,
-        auth: {
-          user: null,
-          isAuthenticated: false,
-          loading: false,
-          error: null,
-          totpRequired: false
-        }
-      };
+    let state = null;
+
+    // If authenticated, try to load from backend first
+    let token;
+    if (__token) {
+      token = __token;
+    } else {
+      token = localStorage.getItem("token");
     }
-    
-    // Only try to fetch from backend if token exists
-    const token = localStorage.getItem('token');
     if (token) {
       try {
-        const response = await axios.get(`${BACKEND_URL}/api/load-state`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (response.data && response.data.state) {
-          // Save the fetched state to IndexedDB
-          await db.put('redux-store', response.data.state, 'latest');
-          // Initialize auth state as empty since it's managed separately
-          return {
-            ...response.data.state,
-            auth: {
-              user: null,
-              isAuthenticated: false,
-              loading: false,
-              error: null,
-              totpRequired: false
-            }
-          };
+        console.log("Fetching state from backend...");
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const response = await axios.get(`${BACKEND_URL}/api/load-state`);
+        if (response.data?.state) {
+          state = response.data.state;
+          // Save backend state to IndexedDB
+          await db.put(STORE_NAME, state, "latest");
+          console.log(state);
+          console.log("Saved backend state to IndexedDB");
         }
       } catch (error) {
-        console.error('Failed to load state from backend:', error);
+        console.error("Failed to load state from backend:", error);
       }
     }
-    
-    return undefined;
+
+    // If no state from backend, try IndexedDB
+    if (!state) {
+      state = await db.get(STORE_NAME, "latest");
+      console.log(
+        "Loaded state from IndexedDB:",
+        state ? "found" : "not found"
+      );
+    }
+
+    // Return state without auth data
+    return state
+      ? {
+          ...state,
+          // Exclude auth state as it's managed separately
+          auth: undefined,
+        }
+      : undefined;
   } catch (error) {
-    console.error('Failed to load persisted state:', error);
+    console.error("Failed to load persisted state:", error);
     return undefined;
   }
 };
@@ -87,75 +84,92 @@ export const createPersistMiddleware = () => {
     db = database;
   });
 
-  // Debounce sync function
-  const debouncedSync = _.debounce(async (state, token) => {
-    if (syncInProgress) return;
-    syncInProgress = true;
-    
+  // Function to sync state with backend
+  const syncWithBackend = async (state) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
     try {
-      await axios.post(`${BACKEND_URL}/api/sync-state`, {
-        state
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      await axios.post(
+        `${BACKEND_URL}/api/sync-state`,
+        { state },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
+      console.log("State synced with backend");
     } catch (error) {
-      console.error('Failed to sync with backend:', error);
+      console.error("Failed to sync state with backend:", error);
     } finally {
       syncInProgress = false;
     }
-  }, 2000);
+  };
 
-  return store => next => async action => {
+  // Debounced sync function
+  const debouncedSync = _.debounce(async (state) => {
+    if (syncInProgress) return;
+    syncInProgress = true;
+    await syncWithBackend(state);
+  }, 1000);
+
+  return (store) => (next) => (action) => {
     // First, dispatch the action
     const result = next(action);
-    
+
     // Get the new state
     const state = store.getState();
-    
-    // Skip persistence for certain action types
+
+    // Skip persistence for certain actions
     if (
-      action.type.startsWith('@@redux') || 
-      action.type.includes('persist') ||
-      action.type.includes('command/setCommand') || // Skip command updates
-      action.type.includes('command/addToHistory') // Skip history updates
+      action.type.startsWith("@@redux") ||
+      action.type.startsWith("auth/") ||
+      action.type.includes("persist") ||
+      action.type.includes("command/setCommand") ||
+      action.type.includes("command/addToHistory")||
+      action.type.includes("/silentUpdateState")
     ) {
       return result;
     }
-    
-    // Create a new state object without auth data and command history for persistence
+
+    console.log("action-type:", action.type);
+    // Create a state object for persistence (excluding auth and temporary data)
     const stateToSync = {
       ...state,
-      auth: undefined, // Exclude auth data
+      auth: undefined,
       command: {
         ...state.command,
         history: [], // Don't persist command history
-      }
+      },
     };
-    
+
     // Only persist if state has actually changed
     if (_.isEqual(stateToSync, lastSyncedState)) {
       return result;
     }
-    
-    try {
-      // Save to IndexedDB immediately but only if state changed
-      if (db) {
-        await db.put('redux-store', stateToSync, 'latest');
-        lastSyncedState = stateToSync;
-      }
-      
-      // Only sync with backend if token exists
-      const token = localStorage.getItem('token');
-      if (token) {
-        debouncedSync(stateToSync, token);
-      }
-    } catch (error) {
-      console.error('Failed to persist state:', error);
+
+    // Update local storage immediately
+    if (db) {
+      db.put(STORE_NAME, stateToSync, "latest")
+        .then(() => {
+          console.log("State saved to IndexedDB");
+          lastSyncedState = stateToSync;
+        })
+        .catch((error) =>
+          console.error("Failed to save state to IndexedDB:", error)
+        );
     }
+
     
+      // Sync with backend if authenticated
+      const token = localStorage.getItem("token");
+      if (token) {
+        debouncedSync(stateToSync);
+      }
+    
+
     return result;
   };
 };

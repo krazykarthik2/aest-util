@@ -30,7 +30,10 @@ export const commandSlice = createSlice({
     },
     updateState: (state, action) => {
       return { ...state, ...action.payload };
-    }
+    },
+    silentUpdateState: (state, action) => {
+      return { ...state, ...action.payload };
+    },
   },
 });
 
@@ -40,7 +43,8 @@ export const {
   addToHistory, 
   setLastOutput, 
   clearHistory,
-  updateState
+  updateState,
+  silentUpdateState
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

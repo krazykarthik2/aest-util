@@ -14,7 +14,7 @@ import Logout from './components/Auth/Logout';
 import Signup from './components/Auth/Signup';
 import EnableTotp from './components/Auth/EnableTotp';
 import PrivateRoute from './components/Auth/PrivateRoute';
-
+import ShowState from './components/ShowState/ShowState'
 // Utils
 import HandleKeyPress from './components/util/HandleKeyPress';
 import { ToastContainer } from 'react-toastify';
@@ -49,6 +49,7 @@ function App() {
             <Route path="/typing" element={<TypingPage />} />
             <Route path="/results" element={<TypingResults />} />
             <Route path="/qr" element={<QRPage />} />
+            <Route path="/state" element={<ShowState />}/>
             {/* /auth routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
