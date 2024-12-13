@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 function Logout() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { loading, error, isAuthenticated, totpRequired } = useSelector(selectAuth);
+    const { loading, error, isAuthenticated } = useSelector(selectAuth);
 
     useEffect(() => {
         if(loading) return;

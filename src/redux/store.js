@@ -15,6 +15,7 @@ const authStateMiddleware = (store) => (next) => (action) => {
   const result = next(action);
 
   // If login successful, fetch fresh state
+  console.log(action.type)
   if (action.type === "auth/login/fulfilled") {
     // Don't block the UI, load state asynchronously
     console.log("when auth/login/fulfilled ayya");
@@ -93,6 +94,7 @@ const initializeStore = async () => {
         )
       ),
     ]);
+
 
     const persistMiddleware = createPersistMiddleware();
 

@@ -1,7 +1,8 @@
 import { openDB } from "idb";
 import axios from "axios";
 import _ from "lodash";
-import { checkAuth } from "./authSlice";
+import { checkAuth, initFromToken, loadAuthFromToken } from "./authSlice";
+import { useDispatch } from "react-redux";
 
 const BACKEND_URL = process.env.REACT_APP_API_URL;
 const DB_NAME = "aest-util-store";
@@ -21,10 +22,10 @@ const initDB = async () => {
 // Load the persisted state
 export const loadPersistedState = async (__token) => {
   console.log("Loading persisted state...");
+
   try {
     const db = await initDB();
     let state = null;
-
     // If authenticated, try to load from backend first
     let token;
     if (__token) {
@@ -34,11 +35,19 @@ export const loadPersistedState = async (__token) => {
     }
     if (token) {
       try {
+        state = {
+          ...state,
+          auth: await loadAuthFromToken(null, {
+            rejectWithValue: (...params) => {
+              console.log("rejected with", params);
+            },
+          }),
+        };
         console.log("Fetching state from backend...");
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const response = await axios.get(`${BACKEND_URL}/api/load-state`);
         if (response.data?.state) {
-          state = response.data.state;
+          state={...state,...response.data.state}
           // Save backend state to IndexedDB
           await db.put(STORE_NAME, state, "latest");
           console.log(state);
@@ -59,13 +68,7 @@ export const loadPersistedState = async (__token) => {
     }
 
     // Return state without auth data
-    return state
-      ? {
-          ...state,
-          // Exclude auth state as it's managed separately
-          auth: undefined,
-        }
-      : undefined;
+    return state;
   } catch (error) {
     console.error("Failed to load persisted state:", error);
     return undefined;
@@ -127,8 +130,7 @@ export const createPersistMiddleware = () => {
       action.type.startsWith("@@redux") ||
       action.type.startsWith("auth/") ||
       action.type.includes("persist") ||
-      action.type.includes("command/setCommand") ||
-      action.type.includes("command/addToHistory")||
+      action.type.includes("command/addToHistory") ||
       action.type.includes("/silentUpdateState")
     ) {
       return result;
@@ -162,13 +164,11 @@ export const createPersistMiddleware = () => {
         );
     }
 
-    
-      // Sync with backend if authenticated
-      const token = localStorage.getItem("token");
-      if (token) {
-        debouncedSync(stateToSync);
-      }
-    
+    // Sync with backend if authenticated
+    const token = localStorage.getItem("token");
+    if (token) {
+      debouncedSync(stateToSync);
+    }
 
     return result;
   };

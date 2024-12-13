@@ -1,51 +1,39 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCommand, setStyle } from './redux/commandSlice';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { setStyle } from './redux/commandSlice';
 
 // Components
-import Terminal from './components/Terminal/Terminal';
-import Clock from './components/Clock/Clock';
-import TypingPage from './components/TypingPage/TypingPage';
-import TypingResults from './components/TypingResults/TypingResults';
-import QRPage from './components/QRPage/QRPage';
+import EnableTotp from './components/Auth/EnableTotp';
 import Login from './components/Auth/Login';
 import Logout from './components/Auth/Logout';
-import Signup from './components/Auth/Signup';
-import EnableTotp from './components/Auth/EnableTotp';
 import PrivateRoute from './components/Auth/PrivateRoute';
-import ShowState from './components/ShowState/ShowState'
+import Signup from './components/Auth/Signup';
+import Clock from './components/Clock/Clock';
+import QRPage from './components/QRPage/QRPage';
+import ShowState from './components/ShowState/ShowState';
+import Terminal from './components/Terminal/Terminal';
+import TypingPage from './components/TypingPage/TypingPage';
+import TypingResults from './components/TypingResults/TypingResults';
 // Utils
-import HandleKeyPress from './components/util/HandleKeyPress';
 import { ToastContainer } from 'react-toastify';
+import HandleKeyPress from './components/util/HandleKeyPress';
+
 function App() {
   const dispatch = useDispatch();
   const { style } = useSelector((state) => state.command);
-
- 
-  useEffect(() => {
-    // Handle /init route parameters
-    const params = new URLSearchParams(window.location.search);
-    const cmd = params.get('cmd');
-    const styleParam = params.get('style');
-
-    if (cmd) dispatch(setCommand(decodeURIComponent(cmd)));
-    if (styleParam) dispatch(setStyle(parseInt(styleParam)));
-  }, [dispatch]);
-
+  const [command,setCommand] = useState("")
   return (
     <Router>
-      <div className={`min-h-screen bg-terminal-black text-terminal-white font-mono ${
-        style === 2 ? 'bg-opacity-95' : ''
-      }`}>
+      <div className={`min-h-screen bg-terminal-black text-terminal-white font-mono`}>
         <Clock />
-        
         <div className="container mx-auto">
           <HandleKeyPress />
           <Routes>
             <Route path="/" element={<Navigate to="/terminal" />} />
             <Route path="/init" element={<Navigate to="/terminal" />} />
-            <Route path="/terminal" element={<Terminal />} />
+            <Route path="/clock" element={<Clock/>}/>
+            <Route path="/terminal" element={<Terminal command={command} setCommand={setCommand} setStyle={setStyle}/>} />
             <Route path="/typing" element={<TypingPage />} />
             <Route path="/results" element={<TypingResults />} />
             <Route path="/qr" element={<QRPage />} />

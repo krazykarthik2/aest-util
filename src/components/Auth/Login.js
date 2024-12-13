@@ -17,6 +17,7 @@ const Login = () => {
   });
 
   useEffect(() => {
+    if(loading)return;
     if (isAuthenticated) {
       // Use requestAnimationFrame for smooth navigation
       requestAnimationFrame(() => {
@@ -26,7 +27,7 @@ const Login = () => {
     return () => {
       dispatch(clearError());
     };
-  }, [isAuthenticated, navigate, dispatch]);
+  }, [isAuthenticated,loading, navigate, dispatch]);
 
   const handleChange = (e) => {
     setFormData({

@@ -64,7 +64,7 @@ const Cursor = () => {
 
 function Diff({ source, change }) {
   const [list, diff_list] = alternateDiff(source, change)
-  const list_spaced = list.map(e => e.split(' '))
+  const list_spaced = list.map(e => e?.split(' '))
   return (
     <div className="flex flex-wrap gap-0">
       {
@@ -74,7 +74,7 @@ function Diff({ source, change }) {
             {
 
               list_spaced[i].map(// word:1 word:last has no margin
-                (ee, ii) => <div className={'word mx-2 before-diff-' + (ii == 0) + ' after-diff-' + (ii == list_spaced[i].length - 1)} key={ii}>{ee.split('').map((eee, iii) =>
+                (ee, ii) => <div className={'word mx-2 before-diff-' + (ii == 0) + ' after-diff-' + (ii == list_spaced[i].length - 1)} key={ii}>{ee?.split('').map((eee, iii) =>
                   <span key={iii} className={diff_list[i] === null ? "text-gray-400" : diff_list[i] ? "text-green-400" : "text-red-400"}>
                     {eee}
                   </span>
@@ -128,7 +128,7 @@ const TypingPage = () => {
 
   useEffect(() => {
     let select = (sampleTexts[Math.floor(Math.random() * sampleTexts.length)]);
-
+    if(!select)return ;
     select = (select.split(' ').filter(e => e).join(' '));
     if (capitalize === "word") {
       select = (select.split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));

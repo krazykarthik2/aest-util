@@ -3,9 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const MAX_HISTORY_LENGTH = 100; // Limit history length
 
 const initialState = {
-  command: '',
   style: 1,
-  history: [],
+  history: [],//{in: ,out: }
   lastOutput: '',
 };
 
@@ -13,9 +12,7 @@ export const commandSlice = createSlice({
   name: 'command',
   initialState,
   reducers: {
-    setCommand: (state, action) => {
-      state.command = action.payload;
-    },
+
     setStyle: (state, action) => {
       state.style = action.payload;
     },
@@ -38,7 +35,6 @@ export const commandSlice = createSlice({
 });
 
 export const { 
-  setCommand, 
   setStyle, 
   addToHistory, 
   setLastOutput, 
