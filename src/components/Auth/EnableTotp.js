@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { enableTotp, selectTotpEnabled, selectTotpEnabling, selectTotpError } from '../../redux/authSlice';
-import QRCode from '../util/QRCode/QRCode';
 import { generateTOTP } from '../../util/jsutil';
 import { Link } from 'react-router-dom';
 import { FaArrowUpRightFromSquare } from 'react-icons/fa6';
+import QRCode from 'react-qr-code';
 
 const EnableTotp = () => {
   const dispatch = useDispatch();
@@ -74,7 +74,7 @@ const EnableTotp = () => {
 <div className="stack d-center w-full">
 
         <QRCode
-          src={authCode}
+          value={authCode}
           />
           <Link to={authCode} className="bg-gray-700 rounded-lg p-4">
             <FaArrowUpRightFromSquare size={24} />

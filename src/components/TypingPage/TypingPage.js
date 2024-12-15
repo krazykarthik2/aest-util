@@ -262,7 +262,7 @@ const TypingPage = () => {
         </div>
 
         <div className="bg-terminal-black p-6 rounded-lg mb-4">
-          <div className="text-terminal-white text-lg font-mono">
+          <div className="text-terminal-white text-lg">
             <Diff source={text} change={input} />
           </div>
         </div>
@@ -272,7 +272,7 @@ const TypingPage = () => {
           type="text"
           value={input}
           onChange={handleInput}
-          className="w-full bg-transparent h-0 p-0 m-0 border-none outline-none text-terminal-white font-mono text-lg"
+          className="w-full bg-transparent h-0 p-0 m-0 border-none outline-none text-terminal-white text-lg"
           placeholder="Start typing..."
           onBlur={(e) => {
            e.target.focus();

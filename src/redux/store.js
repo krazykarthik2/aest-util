@@ -9,7 +9,10 @@ import {
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
-
+const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
+export function getFrontEndURL(){
+  return FRONTEND_URL;
+}
 // Create auth state middleware
 const authStateMiddleware = (store) => (next) => (action) => {
   const result = next(action);

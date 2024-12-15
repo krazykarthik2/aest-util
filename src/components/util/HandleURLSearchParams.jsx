@@ -1,13 +1,19 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import { addToHistory, clearHistory } from "../../redux/commandSlice";
 import { handleCommand } from "../Terminal/logic";
 
-const HandleURLSearchParams = ({ setCommand, setStyle ,ExecuteCommand}) => {
+const HandleURLSearchParams = ({
+  command,
+  setCommand,
+  setStyle,
+  ExecuteCommand,
+}) => {
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const dispatch = useDispatch();
-
+  const [previousStyle, setPreviousStyle] = useState(1);
+  const style = useSelector((state) => state.command.style);
   useEffect(() => {
     const cmd = URLSearchParams.get("cmd");
     const styleParam = URLSearchParams.get("style");
@@ -26,6 +32,28 @@ const HandleURLSearchParams = ({ setCommand, setStyle ,ExecuteCommand}) => {
     }
     setURLSearchParams(new createSearchParams());
   }, [URLSearchParams]);
+
+  useEffect(() => {
+    if (command.trim().startsWith("qr ")) {
+      if (style == 6) return;
+      setPreviousStyle(style);
+      dispatch(setStyle(6)); //qr style is 6
+    } else {
+      if (style == 6) {
+        if (previousStyle) {
+          dispatch(setStyle(previousStyle));
+        } else dispatch(setStyle(1));
+      }
+      // else happy
+    }
+  }, [command]);
+
+  useEffect(() => {
+    if (!previousStyle) return;
+    if (!command.trim().startsWith("qr") && style == 6) {
+      dispatch(setStyle(previousStyle));
+    }
+  }, [command, style, previousStyle]);
 
   return null;
 };

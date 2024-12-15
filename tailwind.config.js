@@ -12,9 +12,10 @@ module.exports = {
         'terminal-accent': '#61dafb',
       },
       fontFamily: {
-        'mono': ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace'],
+        'mono': ['Menlo', 'Monaco', 'Courier New', 'monospace'],
       },
     },
   },
   plugins: [],
+
 }

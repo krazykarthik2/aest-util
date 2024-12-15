@@ -1,0 +1,17 @@
+@font-face {
+    font-family: "Code";
+    src: url("/src/assets/font/JetBrainsMono[wght].ttf") format("truetype");
+    font-weight: 100 300 500 900;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Code Italic";
+    src: url("/src/assets/font/JetBrainsMono-Italic[wght].ttf") format("truetype");
+    font-weight: 100 300 500 900;
+    font-display: swap;
+    font-style: italic;
+}
+body,pre{
+    font-family: "Code" !important;
+}
