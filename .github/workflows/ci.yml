@@ -3,7 +3,7 @@ name: CI/CD Extension Build
 on:
   push:
     branches:
-      - master  
+      - master
 
 jobs:
   build:
@@ -16,13 +16,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.10.0'  # Specify the Node.js version you need
+          node-version: "20.10.0" # Specify the Node.js version you need
 
       - name: Install Dependencies
         run: npm install
 
       - name: Build Extension
         run: npm run cicd.extension.build
+
+      - name: Debug Build Output
+        run: |
+          ls -la __extension_build__
+          echo ${{ secrets.PAT }}
+          echo ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Push __extension_build__ to teja_util_extension
         env:
@@ -31,8 +38,8 @@ jobs:
           git config --global user.name "krazykarthik2"
           git config --global user.email "goparajukarthik2@gmail.com"
           cd __extension_build__
-          git init
-          git remote add origin https://github.com/krazykarthik2/teja_util_extension.git
+          git init --initial-branch=master
+          git remote add origin https://${{ secrets.PAT }}@github.com/krazykarthik2/teja_util_extension.git
           git add .
           git commit -m "Deploying extension build"
           git push -f origin master
