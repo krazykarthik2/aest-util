@@ -37,6 +37,7 @@ const Style1 = (hours, minutes, props, dispatch) => (
         </div>
         <div className="github">
           <GithubBtn />
+          <LoggedinAs />
         </div>
       </div>
     </div>
@@ -79,6 +80,19 @@ const VersionBtn = () => (
     <span className="text-2xl font-bold">21.2.3</span>
   </div>
 );
+const LoggedinAs = () => {
+  const user = useSelector((state) => state.auth.user);
+  return user ? (
+    <div className="d-center gap-2 text-sm w-full">
+      <span> logged in as </span>
+      <span className="">{user?.name}</span>
+    </div>
+  ) : (
+    <div className="d-center gap-2">
+      <span> logged out </span>
+    </div>
+  );
+};
 
 const handleStyleChange = (style, props, dispatch) => {
   dispatch(props.setStyle(style));
@@ -109,6 +123,7 @@ const Style2 = (hours, minutes, props, dispatch) => (
         </div>
         <div className="github">
           <GithubBtn />
+          <LoggedinAs />
         </div>
       </div>
     </div>
@@ -126,22 +141,28 @@ const Style3 = (hours, minutes, props, dispatch) => (
     <div className="left stack justify-between h-full px-16 py-10">
       <div className="top"></div>
       <div className="middle">
-        <div className="text-9xl scale-[1.2] font-bold text-white w-full d-center stack h-full text-3xl">
+        <div className="text-9xl scale-[1.3] font-bold text-white w-full d-center stack h-full text-3xl">
           <div className="hours">{hours}</div>
           <div className="minutes">{minutes}</div>
           <Terminal {...props} hidden={true} />
         </div>
       </div>
-      <div className="bottom d-center stack justify-between">
+      <div className="bottom d-center stack justify-between gap-10 text-gray-500">
         <GithubBtn />
-        <ShareBtn />
+        <div className="justify-between w-full flex flex-col items-center gap-10">
+          <VersionBtn />
+          <ShareBtn />
+        </div>
       </div>
     </div>
-    <div className="middle d-center py-28">
+    <div className="middle d-center py-24">
       <div className="h-full w-2 rounded-full bg-gray-800"></div>
     </div>
-    <div className="right flex d-center w-full px-10">
-      <Terminal {...props} />
+    <div className="right stack d-center w-full px-10 py-7">
+      <div className="d-center h-full w-full">
+        <Terminal {...props} />
+      </div>
+      <LoggedinAs />
     </div>
   </div>
 );
@@ -177,8 +198,9 @@ const Style4 = (hours, minutes, props, dispatch) => (
       <div className="left d-center">
         <ShareBtn />
       </div>
-      <div className="middle d-center">
+      <div className="middle d-center stack gap-5">
         <GithubBtn />
+        <LoggedinAs />
       </div>
       <div className="right d-center">
         <VersionBtn />
@@ -199,6 +221,9 @@ const Style5 = (hours, minutes, props, dispatch) => (
       <div className="terminal w-full h-full">
         <Terminal {...props} />
       </div>
+      <div className="d-center w-full">
+        <LoggedinAs />
+      </div>
     </div>
     <div className="right stack items-end justify-between">
       <div className="left">
@@ -218,9 +243,7 @@ const ShowQr = (props) => {
   const qrData = props.command.replaceAll("qr", "");
   return (
     <div className="d-center w-full h-full">
-      {qrData && qrData.replaceAll(" ", "") && (
-        <QRCode value={qrData} />
-      )}
+      {qrData && qrData.replaceAll(" ", "") && <QRCode value={qrData} />}
       <div className="qrBtn stack gap-10 px-5">
         <FaShareNodes size={37} />
         <FaDownload size={37} />
@@ -330,7 +353,13 @@ const Clock = (props) => {
 
   const getFormattedTime = () => {
     if (!Number.isInteger(style)) return <>{style}Styles has to be a number</>;
-    if (style > allStyles.length) return <>Styles are limited<Terminal {...props} hidden={true} /></>;
+    if (style > allStyles.length)
+      return (
+        <>
+          Styles are limited
+          <Terminal {...props} hidden={true} />
+        </>
+      );
 
     const hours = time.getHours().toString().padStart(2, "0");
     const minutes = time.getMinutes().toString().padStart(2, "0");

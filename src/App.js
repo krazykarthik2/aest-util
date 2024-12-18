@@ -34,7 +34,7 @@ function App() {
     <Router>
       <HandleKeyPress />
       <Routes>
-        <Route path="/" element={<Navigate to="/terminal" />} />
+        <Route path="/" element={<Navigate to="/clock?style=1" />} />
         <Route path="/init" element={<Navigate to="/terminal" />} />
         <Route
           path="/clock"

@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { handleCommand } from "./logic";
 import HandleURLSearchParams from "../util/HandleURLSearchParams";
+import Icon from "./Icon";
 
 const Terminal = ({ command, setCommand, setStyle, hidden }) => {
   const dispatch = useDispatch();
@@ -51,6 +52,17 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
     }
     return <span className="text-red-400">❯_</span>;
   };
+
+  
+  const renderIcon = (command) => {
+    const action = command.split(" ")?.filter((e) => e)?.[0]?.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
+    return (
+      <span className="text-terminal-accent">
+        {action in Icon ? Icon[action] : renderPrompt()}
+      </span>
+    );
+  };
+
   function onKeyDown(e) {
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {
       let x = 0;
@@ -119,7 +131,7 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
             </div>
 
             <form onSubmit={handleSubmit} className="flex items-center">
-              {renderPrompt()}
+              {renderIcon(command)}
               <input
                 autoFocus
                 onBlur={(e) => e.target.focus()}

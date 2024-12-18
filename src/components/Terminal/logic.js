@@ -22,24 +22,45 @@ const links = {
 };
 const ignoreCommands = ["qr"];
 
+const actualAppLinks = {
+  whatsapp: "whatsapp://",
+  vscode: "vscode://",
+  telegram: "tg://",
+  discord: "discord://",
+};
+const aliasAppLinks = {
+  code: actualAppLinks.vscode,
+};
+const appLinks = {
+  ...actualAppLinks,
+  ...aliasAppLinks,
+};
 const actualExternalLinks = {
   colab: "https://colab.research.google.com/",
   gpt: "https://chatgpt.com/",
-  "chrome.settings":"chrome://settings/",
-  "chrome.bookmarks":"chrome://bookmarks/",
-  "chrome.history":"chrome://history/",
-  "chrome.downloads":"chrome://downloads/",
-  "chrome.passwords":"chrome://password-manager",
-  "chrome.extensions":"chrome://extensions/",
+  "chrome.settings": "chrome://settings/",
+  "chrome.bookmarks": "chrome://bookmarks/",
+  "chrome.history": "chrome://history/",
+  "chrome.downloads": "chrome://downloads/",
+  "chrome.passwords": "chrome://password-manager",
+  "chrome.extensions": "chrome://extensions/",
+  "web.whatsapp": "https://web.whatsapp.com/",
+  instagram: "https://www.instagram.com/",
+  facebook: "https://www.facebook.com/",
+  twitter: "https://twitter.com/",
+  tailwind: "https://tailwindcss.com/docs",
 };
 const aliasExternalLinks = {
   chatgpt: actualExternalLinks.gpt,
   openai: actualExternalLinks.gpt,
-  passwords: actualExternalLinks['chrome.passwords'],
+  passwords: actualExternalLinks["chrome.passwords"],
+  ig: actualExternalLinks.instagram,
+  fb: actualExternalLinks.facebook,
 };
 const externalLinks = {
   ...actualExternalLinks,
   ...aliasExternalLinks,
+  ...appLinks,
 };
 const actualExternalSearchLinks = {
   perplexity: (...args) =>
@@ -118,8 +139,8 @@ const externalSearchLinks = {
   ...aliasExternalSearchLinks,
 };
 const openNewTab = (address) => {
-  if(address.startsWith("chrome://")) {
-    window.chrome.tabs.create({ url: address });
+  if (address.startsWith("chrome://")) {
+    window.chrome.tabs?.create({ url: address });
     return;
   }
   window.open(address, "_new", "noopener,noreferrer");
@@ -189,7 +210,7 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   if (action.startsWith("https://")) {
     openNewTab(action + args.join(" "));
   } else {
-    action = action.replaceAll(/[^a-zA-Z0-9.]+/g, "");
+    action = action.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
     action = action.toLowerCase();
     if (action in links) {
       navigate(links[action]);
