@@ -2,15 +2,21 @@ import { BsTelegram } from "react-icons/bs";
 import { CiClock2 } from "react-icons/ci";
 import {
     FaBookmark,
+    FaCamera,
     FaDiscord,
     FaDownload,
     FaFacebook,
+    FaFolder,
     FaGoogleDrive,
     FaHistory,
     FaLock,
-    FaTwitter
+    FaNotepad,
+    FaPhone,
+    FaTwitter,
+    FaWpexplorer
 } from "react-icons/fa";
 import {
+    FaFigma,
     FaGear,
     FaGithub,
     FaGoogle,
@@ -22,13 +28,15 @@ import {
     FaNpm,
     FaQrcode,
     FaQuestion,
+    FaSpotify,
     FaStackOverflow,
     FaWhatsapp,
     FaYoutube,
+
 } from "react-icons/fa6";
 import { FiLogIn, FiLogOut, FiTerminal } from "react-icons/fi";
 import { IoExtensionPuzzleSharp } from "react-icons/io5";
-import { LuBrainCircuit, LuPaintbrushVertical } from "react-icons/lu";
+import { LuBrainCircuit, LuNotepadText, LuPaintbrushVertical } from "react-icons/lu";
 import {
     SiDuckduckgo,
     SiGoogleauthenticator,
@@ -36,6 +44,7 @@ import {
     SiLeetcode,
     SiPerplexity,
     SiPypi,
+    SiNotion
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 const links = {
@@ -63,10 +72,21 @@ const actualAppLinks = {
   whatsapp: <FaWhatsapp />,
   vscode: <VscVscode />,
   telegram: <BsTelegram />,
+  figma: <FaFigma />,
+  spotify:<FaSpotify />,
+  camera: <FaCamera />,
+  notion: <SiNotion />,
+  notepad: <LuNotepadText />,
+  explorer: <FaFolder />,
+  windsurf: <FaWpexplorer />,
   discord: <FaDiscord />,
+  phonelink: <FaPhone />,
 };
 const aliasAppLinks = {
   code: actualAppLinks.vscode,
+  files: actualAppLinks.explorer,
+  link:actualAppLinks.phonelink,
+  phone:actualAppLinks.phonelink
 };
 const appLinks = {
   ...actualAppLinks,

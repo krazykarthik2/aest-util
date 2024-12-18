@@ -24,12 +24,23 @@ const ignoreCommands = ["qr"];
 
 const actualAppLinks = {
   whatsapp: "whatsapp://",
+  figma: "figma://",
+  camera: "camera://",
+  spotify: "spotify://",
+  notion: "notion://",
+  notepad: "notepad://",
+  explorer: "explorer://",
   vscode: "vscode://",
+  windsurf: "windsurf://",
   telegram: "tg://",
   discord: "discord://",
+  phonelink: "ms-phone://",
 };
 const aliasAppLinks = {
   code: actualAppLinks.vscode,
+  files: actualAppLinks.explorer,
+  link:actualAppLinks.phonelink,
+  phone:actualAppLinks.phonelink
 };
 const appLinks = {
   ...actualAppLinks,
