@@ -119,7 +119,7 @@ const externalSearchLinks = {
 };
 const openNewTab = (address) => {
   if(address.startsWith("chrome://")) {
-    chrome.tabs.create({ url: address });
+    window.chrome.tabs.create({ url: address });
     return;
   }
   window.open(address, "_new", "noopener,noreferrer");
