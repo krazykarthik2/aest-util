@@ -35,4 +35,4 @@ jobs:
           git remote add origin https://github.com/krazykarthik2/teja_util_extension.git
           git add .
           git commit -m "Deploying extension build"
-          git push -f origin main
+          git push -f origin master
