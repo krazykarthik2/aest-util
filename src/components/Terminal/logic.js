@@ -1,9 +1,10 @@
 import { setStyle } from "../../redux/commandSlice";
 
 const links = {
-  qrimg:"/qrimgutil",
+  qrimg: "/qrimgutil",
   state: "/state",
   type: "/typing",
+  help: "/help",
   login: "/login",
   signin: "/login",
   logout: "/logout",
@@ -20,8 +21,25 @@ const links = {
   sh: "/terminal?style=10",
 };
 const ignoreCommands = ["qr"];
-const externalLinks = {
+
+const actualExternalLinks = {
   colab: "https://colab.research.google.com/",
+  gpt: "https://chatgpt.com/",
+  "chrome.settings":"chrome://settings/",
+  "chrome.bookmarks":"chrome://bookmarks/",
+  "chrome.history":"chrome://history/",
+  "chrome.downloads":"chrome://downloads/",
+  "chrome.passwords":"chrome://password-manager",
+  "chrome.extensions":"chrome://extensions/",
+};
+const aliasExternalLinks = {
+  chatgpt: actualExternalLinks.gpt,
+  openai: actualExternalLinks.gpt,
+  passwords: actualExternalLinks['chrome.passwords'],
+};
+const externalLinks = {
+  ...actualExternalLinks,
+  ...aliasExternalLinks,
 };
 const actualExternalSearchLinks = {
   perplexity: (...args) =>
@@ -73,13 +91,14 @@ const actualExternalSearchLinks = {
     args.length
       ? "https://leetcode.com/u/" + args[0]
       : "https://leetcode.com/profile",
-  linkedin:(...args) =>
+  linkedin: (...args) =>
     args.length
       ? "https://linkedin.com/search?q=" + encodeURI(args.join(" "))
       : "https://linkedin.com",
-  "linkedin.profile": (...args) => args.length
-  ? "https://linkedin.com/in/" + args.join(' ')
-  : "https://linkedin.com/profile"
+  "linkedin.profile": (...args) =>
+    args.length
+      ? "https://linkedin.com/in/" + args.join(" ")
+      : "https://linkedin.com/profile",
 };
 const aliasExternalSearchLinks = {
   ai: actualExternalSearchLinks.perplexity,
@@ -92,29 +111,78 @@ const aliasExternalSearchLinks = {
   leet: actualExternalSearchLinks.leetcode,
   "leet.profile": actualExternalSearchLinks["leetcode.profile"],
   "leet.u": actualExternalSearchLinks["leetcode.profile"],
+  "?": actualExternalSearchLinks.google,
 };
 const externalSearchLinks = {
   ...actualExternalSearchLinks,
   ...aliasExternalSearchLinks,
 };
 const openNewTab = (address) => {
+  if(address.startsWith("chrome://")) {
+    chrome.tabs.create({ url: address });
+    return;
+  }
   window.open(address, "_new", "noopener,noreferrer");
 };
-export function handleCommand(cmd, navigate, dispatch, clearHistory) {
+
+const convert_currency = async (amount, from, to) => {
+  const url = `https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_VnpBqgCOgfKIzYH4tNKgHbKH1QXx3kNTZaOrkkyn&currencies=${to}&base_currency=${from}`;
+  console.log(url);
+  let res = await fetch(url);
+  res = await res.json();
+  console.log(res);
+  return res.data[to];
+};
+const getQuotes = async (number = 1) => {
+  const url = "https://dummyjson.com/quotes/random/" + number;
+  let res = await fetch(url);
+  res = await res.json();
+  console.log(res);
+  return res;
+};
+const asyncUtilCommands = {
+  convert: async (...args) => {
+    if (args.length === 3) {
+      let [amount, from, to] = args;
+      console.log(
+        [amount, from, to].filter((e) => !Number.isFinite(Number(e)))
+      );
+      const x = [
+        ...[amount, from, to].filter((e) => Number.isFinite(Number(e))),
+        ...[amount, from, to]
+          .filter((e) => !Number.isFinite(Number(e)))
+          .map((e) => e?.toUpperCase()),
+      ];
+      [amount, from, to] = x;
+      console.log([amount, from, to]);
+      if (from === to) return null;
+      const rate = await convert_currency(amount, from, to);
+      console.log(rate);
+      return `${amount} ${from} to ${to}: ${
+        rate * amount
+      } @ ${from}-${to} = ${rate}`;
+    }
+  },
+  quote: async (...args) => {
+    const q = await getQuotes(1);
+    return q[0].quote + "\n~" + q[0].author;
+  },
+};
+export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   if (!cmd || !navigate || !dispatch || !clearHistory) return;
   cmd = cmd.trim();
   let [action, ...args] = cmd.split(" ");
 
   console.log("$$$$$$", action);
-  if (action.startsWith("?")) {
-    navigate(
-      "?" +
-        action.substr(1) +
-        (action.substr(1) && args.join("") ? "%20" : "") +
-        args.join("%20")
-    );
-    return null;
-  }
+  // if (action.startsWith("?")) { testing
+  //   navigate(
+  //     "?" +
+  //       action.substr(1) +
+  //       (action.substr(1) && args.join("") ? "%20" : "") +
+  //       args.join("%20")
+  //   );
+  //   return null;
+  // }
   if (ignoreCommands.includes(action)) {
     return null;
   }
@@ -129,6 +197,9 @@ export function handleCommand(cmd, navigate, dispatch, clearHistory) {
       openNewTab(externalLinks[action]);
     } else if (action in externalSearchLinks) {
       openNewTab(externalSearchLinks[action](...args));
+    } else if (action in asyncUtilCommands) {
+      const result = await asyncUtilCommands[action](...args);
+      return result;
     } else {
       switch (action) {
         case "style":

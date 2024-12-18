@@ -14,18 +14,23 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
 
   const [upIndex, setUpIndex] = useState(0);
   const inputRef = useRef(null);
-  const limit = 3
+  const limit = 3;
 
-  function ExecuteCommand(cmd) {
-    setTimeout(() => {
+  async function ExecuteCommand(cmd) {
+    setTimeout(async () => {
       if (!cmd) return;
-      cmd.split("&").forEach((element) => {
-        const output = handleCommand(element, navigate, dispatch, clearHistory);
+      for (let element of cmd.split("&")) {
+        const output = await handleCommand(
+          element,
+          navigate,
+          dispatch,
+          clearHistory
+        );
         if (output !== null) {
           //null means silent
           dispatch(addToHistory({ input: element, output: output }));
         }
-      });
+      }
     }, 0);
   }
   const handleSubmit = (e) => {
@@ -36,9 +41,13 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
     setUpIndex(0);
   };
 
-  const renderPrompt = (isOld=false) => {
+  const renderPrompt = (isOld = false) => {
     if (style === 1) {
-      return <span className={"text-terminal-accent "+(isOld?"opacity-75":"")}>$&gt;</span>;
+      return (
+        <span className={"text-terminal-accent " + (isOld ? "opacity-75" : "")}>
+          $&gt;
+        </span>
+      );
     }
     return <span className="text-red-400">❯_</span>;
   };
@@ -47,7 +56,7 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
       let x = 0;
       if (e.key == "ArrowUp") x = 1;
       else if (e.key == "ArrowDown") x = -1;
-      if((upIndex+x)>history.length)return;
+      if (upIndex + x > history.length) return;
       if (upIndex + x < 1) {
         setUpIndex(0);
         setCommand("");
@@ -67,25 +76,46 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
   return (
     <>
       {hidden ? null : (
-        <div className="w-full max-w-2xl mx-auto" onClick={() => inputRef.current?.focus()}>
+        <div
+          className="w-full max-w-2xl mx-auto"
+          onClick={() => inputRef.current?.focus()}
+        >
           <div className="w-full terminal-container">
-            <div className="">
-              {history.map((entry,index)=>({entry,index})).slice(-(limit-1+Math.max(1,upIndex)),Math.max(limit,history.length-upIndex+1)).map(({entry,index}) => (
-                <div key={index} className="mb-2 flex">
-                  {index ===history.length- upIndex ? "===>" : renderPrompt(true)}
+            <div className="stack">
+              {history
+                .map((entry, index) => ({ entry, index }))
+                .slice(
+                  -(limit - 1 + Math.max(1, upIndex)),
+                  Math.max(limit, history.length - upIndex + 1)
+                )
+                .map(({ entry, index }) => (
                   <div
+                    key={index}
                     className={
-                      (index === history.length - upIndex ? "ml-10" : "ml-5") +
-                      " text-terminal-white stack"
+                      "mb-2 flex w-full " +
+                      (index === history.length - upIndex ? "gap-10" : "gap-5")
                     }
                   >
-                    <span>{entry.input}</span>
-                    <pre className="text-gray-300">
-                      &lt;&nbsp;&nbsp;&nbsp;{entry.output}
-                    </pre>
+                    {index === history.length - upIndex
+                      ? "===>"
+                      : renderPrompt(true)}
+                    <div className=" text-terminal-white w-full stack">
+                      <span>{entry.input}</span>
+                      <div className="d-center text-gray-300 flex gap-4">
+                        <div className="thisisoutput">&lt;&lt;</div>
+                        <div className="text-gray-300 stack w-full justify-start">
+                          {entry.output.split("\n").map((e) => (
+                            <div className="line flex flex-wrap justify-end w-[fit-content]">
+                              {e.split(" ").map((e) => (
+                                <span>{e}&nbsp;</span>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <form onSubmit={handleSubmit} className="flex items-center">

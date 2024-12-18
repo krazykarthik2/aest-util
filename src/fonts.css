@@ -12,6 +12,6 @@
     font-display: swap;
     font-style: italic;
 }
-body,pre{
+body,pre,.font-code{
     font-family: "Code" !important;
 }

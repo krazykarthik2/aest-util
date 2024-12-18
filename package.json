@@ -7,6 +7,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@uiw/react-md-editor": "^4.0.4",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
@@ -28,6 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && echo '/* /index.html  200' | cat >build/_redirects",
+    "extension.build": "echo Make sure you 1.run npm run build before 2. have only manifest.json inside the extension folder && (if exist __extension_build__ rmdir __extension_build__ /s /q ) && xcopy build __extension_build__ /E /I && cd __extension_build__ && del _redirects && del manifest.json &&cd ..&& xcopy extension  __extension_build__ /E /I ",
+    "cicd.extension.build":"npm run build &&echo Make sure you 1. have only manifest.json inside the extension folder && [ -d '__extension_build__' ] && rm -rf __extension_build__ && xcopy build __extension_build__ /E /I && cd __extension_build__ && rm -f _redirects manifest.json && cd .. && xcopy extension __extension_build__ /E /I ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

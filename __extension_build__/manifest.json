@@ -1,0 +1,13 @@
+{
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "manifest_version": 3,
+    "name": "Aesthetic Terminal",
+    "version": "1.0",
+    "description": "Redirects every new tab to a specific website.",
+    "permissions": ["tabs"],
+    "chrome_url_overrides": {
+      "newtab": "index.html"
+    }
+  }

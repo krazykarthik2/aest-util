@@ -25,7 +25,7 @@ import TypingResults from "./components/TypingResults/TypingResults";
 import { ToastContainer } from "react-toastify";
 import HandleKeyPress from "./components/util/HandleKeyPress";
 import TerminalPage from "./components/TerminalPage/TerminalPage";
-
+import Help from "./components/Help/Help";
 function App() {
   const dispatch = useDispatch();
   const { style } = useSelector((state) => state.command);
@@ -67,6 +67,7 @@ function App() {
           <Route path="8" element={<Navigate to={"/clock?style=8"} />} />
           <Route path="9" element={<Navigate to={"/clock?style=9"} />} />
         </Route>
+        <Route path="/help" element={<Help/>}/>
         <Route path="/typing" element={<TypingPage />} />
         <Route path="/results" element={<TypingResults />} />
         <Route path="/qr" element={<Navigate to="/clock" />} />

@@ -27,7 +27,7 @@ const StoreProvider = ({ children }) => {
 
   return <Provider store={store}>{children}</Provider>;
 };
-
+document.title = window.location.origin.startsWith("chrome-extension://") ? "New Terminal" :"Teja util"
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
