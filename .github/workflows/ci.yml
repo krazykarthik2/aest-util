@@ -3,7 +3,7 @@ name: CI/CD Extension Build
 on:
   push:
     branches:
-      - main  # Change this to the branch you want to trigger the workflow on
+      - master  
 
 jobs:
   build:
