@@ -7,8 +7,9 @@ import {
   loadPersistedState,
 } from "./persistMiddleware";
 import axios from "axios";
+import { getBackendUrl } from "../util/jsutil";
 
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL =getBackendUrl();
 const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
 export function getFrontEndURL(){
   return FRONTEND_URL;
@@ -16,7 +17,6 @@ export function getFrontEndURL(){
 // Create auth state middleware
 const authStateMiddleware = (store) => (next) => (action) => {
   const result = next(action);
-
   // If login successful, fetch fresh state
   console.log(action.type)
   if (action.type === "auth/login/fulfilled") {

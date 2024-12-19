@@ -3,8 +3,9 @@ import axios from "axios";
 import _ from "lodash";
 import { checkAuth, initFromToken, loadAuthFromToken } from "./authSlice";
 import { useDispatch } from "react-redux";
+import { getBackendUrl } from "../util/jsutil";
 
-const BACKEND_URL = process.env.REACT_APP_API_URL;
+const BACKEND_URL = getBackendUrl();
 const DB_NAME = "aest-util-store";
 const STORE_NAME = "redux-store";
 

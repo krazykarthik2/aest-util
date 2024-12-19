@@ -3,8 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { openDB } from "idb";
 import { loadPersistedState } from "./persistMiddleware";
-const API_URL = process.env.REACT_APP_API_URL;
-
+import { getBackendUrl } from "../util/jsutil";
+const API_URL = getBackendUrl();
 const initialState = {
   user: null,
   token: null,
