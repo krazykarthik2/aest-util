@@ -15,6 +15,7 @@ const HandleKeyPress = () => {
         else if (Number.isInteger(parseInt(e.key))) {
           if ([1, 2, 3, 4, 5,  7, 8].includes(parseInt(e.key)))// 6 for qr code only
             navigate(`/clock?style=${parseInt(e.key)}`);
+          if(e.key ==="0") navigate("/keyboard?style=10");
         }
       }
     };

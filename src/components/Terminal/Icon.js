@@ -1,56 +1,56 @@
 import { BsTelegram } from "react-icons/bs";
 import { CiClock2 } from "react-icons/ci";
 import {
-    FaBookmark,
-    FaCamera,
-    FaDiscord,
-    FaDownload,
-    FaFacebook,
-    FaFolder,
-    FaGoogleDrive,
-    FaHistory,
-    FaLock,
-    FaNotepad,
-    FaPhone,
-    FaTwitter,
-    FaWpexplorer
+  FaBookmark,
+  FaCamera,
+  FaDiscord,
+  FaDownload,
+  FaFacebook,
+  FaFolder,
+  FaGoogleDrive,
+  FaHistory,
+  FaLock,
+  FaPhone,
+  FaTwitter,
+  FaWpexplorer
 } from "react-icons/fa";
 import {
-    FaFigma,
-    FaGear,
-    FaGithub,
-    FaGoogle,
-    FaGreaterThan,
-    FaInstagram,
-    FaKaggle,
-    FaKeyboard,
-    FaLinkedin,
-    FaNpm,
-    FaQrcode,
-    FaQuestion,
-    FaSpotify,
-    FaStackOverflow,
-    FaWhatsapp,
-    FaYoutube,
-
+  FaFigma,
+  FaGear,
+  FaGithub,
+  FaGoogle,
+  FaInstagram,
+  FaKaggle,
+  FaKeyboard,
+  FaLinkedin,
+  FaNpm,
+  FaQrcode,
+  FaQuestion,
+  FaSpotify,
+  FaStackOverflow,
+  FaWhatsapp,
+  FaYoutube
 } from "react-icons/fa6";
 import { FiLogIn, FiLogOut, FiTerminal } from "react-icons/fi";
 import { IoExtensionPuzzleSharp } from "react-icons/io5";
+import { LiaBroomSolid } from "react-icons/lia";
 import { LuBrainCircuit, LuNotepadText, LuPaintbrushVertical } from "react-icons/lu";
 import {
-    SiDuckduckgo,
-    SiGoogleauthenticator,
-    SiGooglecolab,
-    SiLeetcode,
-    SiPerplexity,
-    SiPypi,
-    SiNotion
+  SiDuckduckgo,
+  SiGoogleauthenticator,
+  SiGooglecolab,
+  SiLeetcode,
+  SiNotion,
+  SiPerplexity,
+  SiPypi
 } from "react-icons/si";
+import { TfiAnnouncement } from "react-icons/tfi";
 import { VscVscode } from "react-icons/vsc";
 const links = {
   qrimg: <FaQrcode />,
   state: null,
   type: <FaKeyboard />,
+  keyboard: <FaKeyboard />,
   help: <FaQuestion />,
   login: <FiLogIn />,
   signin: <FiLogIn />,
@@ -152,9 +152,9 @@ const externalSearchLinks = {
 };
 const switchExecution = {
   style: <LuPaintbrushVertical />,
-  echo: <FaGreaterThan />,
-  clear: <FaGreaterThan />,
-  cls: <FaGreaterThan />,
+  echo: <TfiAnnouncement />,
+  clear: <LiaBroomSolid />,
+  cls: <LiaBroomSolid />
 };
 const Icon = {
   ...links,

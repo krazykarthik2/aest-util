@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   preferences: {
@@ -7,14 +7,25 @@ const initialState = {
         timeLimit: 60,
         punc: false,
         num: false,
-        capitalize: "small" // capital, small, word, sentence
-      }
-    }
-  }
+        capitalize: "small", // capital, small, word, sentence
+        mode: "timeLimit",
+        words: 50,
+      },
+    },
+    keyboard: {
+      layout: "alphabet", //alphabet, alphanumeric, all
+      delay:0,
+    },
+  },
 };
-
+export const timeLimitOptions = [15, 30, 60, 120];
+export const modeOptions = ["timeLimit", "words","quote"];
+export const wordOptions = [25, 50, 100,150];
+export const captializeOptions = ["capital", "small", "word", "sentence"];
+export const LayoutOptions = ["alphabet", "alphanumeric", "all"];
+export const delayOptions = [0,100,250,500,1000,2000]
 export const typingSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setTimeLimit: (state, action) => {
@@ -31,12 +42,40 @@ export const typingSlice = createSlice({
     },
     silentUpdateState: (state, action) => {
       return { ...state, ...action.payload };
-    }
-  }
+    },
+    setKeyboardLayout: (state, action) => {
+      if(!("keyboard" in state.preferences)) state.preferences.keyboard = initialState.preferences.keyboard;
+      state.preferences.keyboard.layout = action.payload;
+    },
+    setKeyboardDelay : (state, action) => {
+      if(!("keyboard" in state.preferences)) state.preferences.keyboard = initialState.preferences.keyboard;
+      state.preferences.keyboard.delay = action.payload;
+    },
+    setTypingMode: (state, action) => {
+      state.preferences.typing.typesetting.mode = action.payload;
+    },
+    setWords: (state, action) => {
+      state.preferences.typing.typesetting.words = action.payload;
+    },
+  },
 });
 
-export const { setTimeLimit, setPunctuation, setNumbers, setCapitalization, silentUpdateState } = typingSlice.actions;
+export const {
+  setTimeLimit,
+  setPunctuation,
+  setNumbers,
+  setCapitalization,
+  silentUpdateState,
+  setKeyboardLayout,
+  setKeyboardDelay,
+  setTypingMode,
+  setWords
+} = typingSlice.actions;
 
-export const selectTypingSettings = (state) => state.user.preferences.typing.typesetting;
-
+export const selectTypingSettings = (state) =>
+  state.user.preferences.typing.typesetting;
+export const selectKeyboardLayout = (state) =>
+  state.user.preferences.keyboard.layout;
+export const selectKeyboardDelay = (state) =>
+  state.user.preferences.keyboard.delay; 
 export default typingSlice.reducer;

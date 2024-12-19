@@ -46,6 +46,7 @@ function App() {
             />
           }
         />
+        <Route path="/keyboard" element={<LandingPage command={command} setCommand={setCommand} setStyle={setStyle} />} />
         <Route
           path="/terminal"
           element={

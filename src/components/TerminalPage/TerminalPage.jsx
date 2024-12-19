@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { GithubBtn } from "../LandingPage/LandingPage";
+import { GithubBtn } from "../LandingPage/pins";
 import Terminal from "../Terminal/Terminal";
 import { useSelector, useDispatch } from "react-redux";
 

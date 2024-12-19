@@ -4,6 +4,7 @@ const links = {
   qrimg: "/qrimgutil",
   state: "/state",
   type: "/typing",
+  keyboard: "/keyboard?style=10",
   help: "/help",
   login: "/login",
   signin: "/login",
@@ -39,8 +40,8 @@ const actualAppLinks = {
 const aliasAppLinks = {
   code: actualAppLinks.vscode,
   files: actualAppLinks.explorer,
-  link:actualAppLinks.phonelink,
-  phone:actualAppLinks.phonelink
+  link: actualAppLinks.phonelink,
+  phone: actualAppLinks.phonelink,
 };
 const appLinks = {
   ...actualAppLinks,
@@ -143,7 +144,6 @@ const aliasExternalSearchLinks = {
   leet: actualExternalSearchLinks.leetcode,
   "leet.profile": actualExternalSearchLinks["leetcode.profile"],
   "leet.u": actualExternalSearchLinks["leetcode.profile"],
-  "?": actualExternalSearchLinks.google,
 };
 const externalSearchLinks = {
   ...actualExternalSearchLinks,
@@ -215,6 +215,29 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   //   );
   //   return null;
   // }
+  const startCharActions = {
+    "?": (...e) => {
+      return [false, openNewTab(externalSearchLinks.google(...e))];
+    },
+    "#": (...e) => {
+      let result = null;
+      try {
+        result = eval(e.join(" "));
+      } catch (error) {
+        console.log(error.message);
+        result = "error:"+error.message;
+      } finally {
+        return [true, result];
+      }
+    },
+  };
+  if (action[0] in startCharActions) {
+    const [toshowresult, result] = startCharActions[action[0]](
+      action.substr(1),
+      ...args
+    );
+    if (toshowresult) return JSON.stringify(result) || "";
+  }
   if (ignoreCommands.includes(action)) {
     return null;
   }

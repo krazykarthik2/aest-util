@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setTimeLimit,
-  setPunctuation,
-  setNumbers,
-  setCapitalization,
-  selectTypingSettings,
-} from "../../redux/typingSlice";
 import axios from "axios";
-import "./TypingPage.css";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import commonthousand from "../../assets/most-common-1000.txt";
-
-async function getRandomQuote() {
-  try {
-    const response = await axios.get("https://dummyjson.com/quotes/random/10");
-    return response.data.map((e) => e.quote);
-  } catch (error) {
-    console.error("Error fetching random text:", error);
-    return "";
-  }
-}
+import {
+  captializeOptions,
+  modeOptions,
+  selectTypingSettings,
+  setCapitalization,
+  setNumbers,
+  setPunctuation,
+  setTimeLimit,
+  setTypingMode,
+  setWords,
+  timeLimitOptions,
+  wordOptions,
+} from "../../redux/typingSlice";
+import "./TypingPage.css";
+import { getFormattedText } from "./util";
+import { getRandomQuote } from "../../util/jsutil";
 async function getRandomWords(number = 50) {
   try {
     const response = await axios.get(commonthousand);
@@ -35,7 +33,7 @@ async function getRandomWords(number = 50) {
 const treatSpace = (str, to_show = true) => {
   return to_show ? str.replaceAll(/\s/g, "_") : str;
 };
-function alternateDiff(source, change) {
+export function alternateDiff(source, change) {
   let is_same = true;
   let list = [];
   let diff_list = [];
@@ -78,60 +76,74 @@ function alternateDiff(source, change) {
 
 window.alternateDiff = alternateDiff;
 
-const Cursor = () => {
-  return <div className="h-7 w-1 bg-[var(--accent-color)] animate-pulse"></div>;
+export const Cursor = ({__ref}) => {
+  return <div className="h-7 w-1 bg-[var(--accent-color)] animate-pulse" ref={__ref}></div>;
 };
+function EachList({ e, i, list_spaced, diff_list }) {
+  const CursorRef = React.useRef(null);
+  useEffect(() => {
+    if (CursorRef.current) {
+      CursorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [CursorRef,i,list_spaced]);
+  return (
+    <>
+      {diff_list[i] == null && <Cursor __ref={CursorRef} />}
+      {list_spaced[i].map(
+        // word:1 word:last has no margin
+        (ee, ii) => (
+          <div
+            className={
+              "word mx-2 before-diff-" +
+              (ii == 0) +
+              " after-diff-" +
+              (ii == list_spaced[i].length - 1)
+            }
+            key={ii}
+          >
+            {ee?.split().map((eee, iii) => (
+              <span
+                key={iii}
+                className={
+                  diff_list[i] === null
+                    ? "text-gray-400"
+                    : diff_list[i]
+                    ? "text-green-400"
+                    : "text-red-400"
+                }
+              >
+                {eee}
+              </span>
+            ))}
+          </div>
+        )
+      )}
+    </>
+  );
+}
 
 function Diff({ source, change }) {
   const [list, diff_list] = alternateDiff(source, change);
   const list_spaced = list.map((e) => e?.split(" "));
+
   return (
-    <div className="flex flex-wrap gap-0 overflow-y-auto max-h-full text-2xl">
-      {list.map((e, i) => {
-        return (
-          <React.Fragment key={i}>
-            {diff_list[i] == null && <Cursor />}
-            {list_spaced[i].map(
-              // word:1 word:last has no margin
-              (ee, ii) => (
-                <div
-                  className={
-                    "word mx-2 before-diff-" +
-                    (ii == 0) +
-                    " after-diff-" +
-                    (ii == list_spaced[i].length - 1)
-                  }
-                  key={ii}
-                >
-                  {ee?.split().map((eee, iii) => (
-                    <span
-                      key={iii}
-                      className={
-                        diff_list[i] === null
-                          ? "text-gray-400"
-                          : diff_list[i]
-                          ? "text-green-400"
-                          : "text-red-400"
-                      }
-                    >
-                      {eee}
-                    </span>
-                  ))}
-                </div>
-              )
-            )}
-          </React.Fragment>
-        );
-      })}
+    <div className="flex flex-wrap gap-0 text-2xl">
+      {list.map((e, i) => (
+        <EachList
+          key={i}
+          e={e}
+          i={i}
+          list_spaced={list_spaced}
+          diff_list={diff_list}
+        />
+      ))}
     </div>
   );
 }
-
 const TypingPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { style } = useSelector((state) => state.command);
-  const { timeLimit, punc, num, capitalize } =
+  const { timeLimit, punc, num, capitalize, mode, words } =
     useSelector(selectTypingSettings);
   const [text, setText] = useState("");
   const [input, setInput] = useState("");
@@ -139,83 +151,47 @@ const TypingPage = () => {
   const [isActive, setIsActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(timeLimit);
   const [stats, setStats] = useState(null);
-  const capitalizeChoices = ["capital", "small", "word", "sentence"];
   const nextCapitalizeChoice = (cp) => {
-    const currentIndex = capitalizeChoices.indexOf(cp);
-    const nextIndex = (currentIndex + 1) % capitalizeChoices.length;
-    return capitalizeChoices[nextIndex];
+    const currentIndex = captializeOptions.indexOf(cp);
+    const nextIndex = (currentIndex + 1) % captializeOptions.length;
+    return captializeOptions[nextIndex];
   };
 
   const inputRef = React.useRef(null);
+  const diffScrollerRef = React.useRef(null);
+  window.diffs = diffScrollerRef;
   window.source = text;
   window.change = input;
 
   const [takenWords, setTakenWords] = useState();
 
   useEffect(() => {
-    getRandomWords({ 15: 50, 30: 100, 60: 200, 120: 300 }[timeLimit])
+    if (mode == "quote") {
+      getRandomQuote()
+        .then((quote) => {
+          setTakenWords(quote[0].split(" "));
+        })
+        .catch((error) => {
+          console.error("Error fetching random quote:", error);
+        });
+    }
+    let __words;
+    if (mode == "timeLimit")
+      __words = { 15: 50, 30: 100, 60: 200, 120: 300 }[timeLimit];
+    else if (mode == "words") __words = words;
+    getRandomWords(__words)
       .then((randomWords) => {
         setTakenWords(randomWords);
       })
       .catch((error) => {
         console.error("Error fetching random text:", error);
       });
-  }, [timeLimit]);
+  }, [timeLimit, words, mode]);
 
   useEffect(() => {
     if (!takenWords) return;
     let select = takenWords.join(" ");
-    if (!select) return;
-    select = select
-      .split(" ")
-      .filter((e) => e)
-      .join(" ");
-    if (capitalize === "word") {
-      select = select
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-    } else if (capitalize === "sentence") {
-      select = select
-        .split(".")
-        .map((sentence) => sentence.charAt(0).toUpperCase() + sentence.slice(1))
-        .join(".");
-    } else if (capitalize === "capital") {
-      select = select.toUpperCase();
-    } else if (capitalize === "small") {
-      select = select.toLowerCase();
-    }
-
-    if (!punc) {
-      select = select.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
-    } else {
-      //sometimes add comma after a word randomly sometimes add a dot
-      select = select
-        .split(" ")
-        .map((e) => {
-          return (
-            e + (Math.random() < 0.1 ? "," : Math.random() < 0.2 ? "." : "")
-          );
-        })
-        .join(" ");
-    }
-    if (!num) {
-      select = select.replace(/[0-9]/g, "");
-    } else {
-      select = select
-        .split(" ")
-        .map((e) => {
-          return (
-            e +
-            (Math.random() < 0.1
-              ? Math.floor(Math.random() * 10)
-              : Math.random() < 0.2
-              ? Math.floor(Math.random() * 100)
-              : "")
-          );
-        })
-        .join(" ");
-    }
+    select = getFormattedText(select, capitalize, punc, num);
     setText(select);
     setStartTime(null);
     setIsActive(false);
@@ -267,7 +243,7 @@ const TypingPage = () => {
       setIsActive(false);
       const stats = calculateStats();
       setStats(stats);
-      navigate("/results", { state: { stats } });
+      navigate("/results", { state: { stats, tryAgain: "/typing" } });
     }
   };
 
@@ -287,7 +263,10 @@ const TypingPage = () => {
       setStartTime(null);
     }
   }, [timeLeft, calculateStats, navigate]);
+
   useEffect(() => {
+    //only for timeLimit mode
+    if (mode != "timeLimit") return;
     if (!startTime) return;
     if (!isActive) return;
     const stopper = setInterval(() => {
@@ -298,7 +277,7 @@ const TypingPage = () => {
     return () => {
       clearInterval(stopper);
     };
-  }, [isActive, timeLimit, startTime]);
+  }, [isActive, timeLimit, startTime, mode]);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -306,52 +285,57 @@ const TypingPage = () => {
 
   return (
     <div className="typing-page min-h-screen flex flex-col items-center justify-center p-8">
-      <div
-        className={`w-full max-w-3xl ${
-          style === 1 ? "bg-terminal-gray rounded-lg p-6" : ""
-        }`}
-      >
+      <div className="w-full max-w-3xl bg-terminal-gray rounded-lg p-6">
         <div className="flex justify-between mb-4">
-          <div className="space-x-4">
-            <button
-              className={`${
-                timeLimit === 15 ? "text-red-400" : "text-gray-500"
-              }`}
-              onClick={() => dispatch(setTimeLimit(15))}
-            >
-              15
-            </button>
-            <button
-              className={`${
-                timeLimit === 30 ? "text-red-400" : "text-gray-500"
-              }`}
-              onClick={() => dispatch(setTimeLimit(30))}
-            >
-              30
-            </button>
-            <button
-              className={`${
-                timeLimit === 60 ? "text-red-400" : "text-gray-500"
-              }`}
-              onClick={() => dispatch(setTimeLimit(60))}
-            >
-              60
-            </button>
-            <button
-              className={`${
-                timeLimit === 120 ? "text-red-400" : "text-gray-500"
-              }`}
-              onClick={() => dispatch(setTimeLimit(120))}
-            >
-              120
-            </button>
+          
+        <div className="space-x-4">
+            {modeOptions.map((e) => (
+              <button
+                className={`${mode === e ? "text-red-400" : "text-gray-500"}`}
+                onClick={() => dispatch(setTypingMode(e))}
+              >
+                {e}
+              </button>
+            ))}
           </div>
-          {isActive && (
+          
+          {mode == "timeLimit" && (
+            <div className="space-x-4">
+              {timeLimitOptions.map((e) => (
+                <button
+                  className={`${
+                    timeLimit === e ? "text-red-400" : "text-gray-500"
+                  }`}
+                  onClick={() => dispatch(setTimeLimit(e))}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+          )}
+          {mode == "words" && (
+            <div className="space-x-4">
+              {wordOptions.map((e) => (
+                <button
+                  className={`${
+                    words === e ? "text-red-400" : "text-gray-500"
+                  }`}
+                  onClick={() => dispatch(setWords(e))}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+          )}
+
+
+          {isActive && mode == "timeLimit" && (
             <div className="d-center timer-cont">
               <span className="text-red-400">{timeLeft > 0 && timeLeft}</span>
               <span className="text-gray-500">s</span>
             </div>
           )}
+
           <div className="flex space-x-4">
             <button
               type="button"
@@ -383,7 +367,10 @@ const TypingPage = () => {
         </div>
 
         <div className="bg-terminal-black p-6 rounded-lg mb-4">
-          <div className="text-terminal-white text-lg max-h-96">
+          <div
+            className="text-terminal-white text-lg max-h-96 overflow-y-auto"
+            ref={diffScrollerRef}
+          >
             <Diff source={text} change={input} />
           </div>
         </div>

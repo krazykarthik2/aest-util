@@ -55,7 +55,7 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
 
   
   const renderIcon = (command) => {
-    const action = command.split(" ")?.filter((e) => e)?.[0]?.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
+    const action = command?.split(" ")?.filter((e) => e)?.[0]?.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
     return (
       <span className="text-terminal-accent">
         {action in Icon ? Icon[action] : renderPrompt()}
