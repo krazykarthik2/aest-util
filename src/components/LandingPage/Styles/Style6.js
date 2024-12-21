@@ -12,7 +12,7 @@ const ShowQr = (props) => {
     const qrData = props.command.replaceAll("qr", "");
     return (
       <div className="d-center w-full h-full">
-        {qrData && qrData.replaceAll(" ", "") && <QRCode value={qrData} />}
+        {qrData && qrData.replaceAll(" ", "") && <QRCode value={qrData} style={{border:"3px solid #fff"}} />}
         <div className="qrBtn stack gap-10 px-5">
           <FaShareNodes size={37} />
           <FaDownload size={37} />
