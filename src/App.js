@@ -30,33 +30,23 @@ function App() {
   const dispatch = useDispatch();
   const { style } = useSelector((state) => state.command);
   const [command, setCommand] = useState("");
+  const [focus, setFocus] = useState(false);
+  const terminalProps = {
+    command: command,
+    setCommand: setCommand,
+    setStyle: setStyle,
+    setFocus: setFocus,
+    focus: focus,
+  };
   return (
     <Router>
-      <HandleKeyPress />
+      <HandleKeyPress focus={focus} />
       <Routes>
         <Route path="/" element={<Navigate to="/clock?style=1" />} />
         <Route path="/init" element={<Navigate to="/terminal" />} />
-        <Route
-          path="/clock"
-          element={
-            <LandingPage
-              command={command}
-              setCommand={setCommand}
-              setStyle={setStyle}
-            />
-          }
-        />
-        <Route path="/keyboard" element={<LandingPage command={command} setCommand={setCommand} setStyle={setStyle} />} />
-        <Route
-          path="/terminal"
-          element={
-            <TerminalPage
-              command={command}
-              setCommand={setCommand}
-              setStyle={setStyle}
-            />
-          }
-        />
+        <Route path="/clock" element={<LandingPage {...terminalProps} />} />
+        <Route path="/keyboard" element={<LandingPage {...terminalProps} />} />
+        <Route path="/terminal" element={<TerminalPage {...terminalProps} />} />
         <Route path="">
           <Route path="1" element={<Navigate to={"/clock?style=1"} />} />
           <Route path="2" element={<Navigate to={"/clock?style=2"} />} />
@@ -68,13 +58,13 @@ function App() {
           <Route path="8" element={<Navigate to={"/clock?style=8"} />} />
           <Route path="9" element={<Navigate to={"/clock?style=9"} />} />
         </Route>
-        <Route path="/help" element={<Help/>}/>
+        <Route path="/help" element={<Help />} />
         <Route path="/typing" element={<TypingPage />} />
         <Route path="/results" element={<TypingResults />} />
         <Route path="/qr" element={<Navigate to="/clock" />} />
-        <Route path="/qrimgutil" element={<QrImgUtil/>}/>
+        <Route path="/qrimgutil" element={<QrImgUtil />} />
         <Route path="/qrimgresult">
-          <Route path=":result" element={<QrImgResult/>}/>
+          <Route path=":result" element={<QrImgResult />} />
         </Route>
         <Route path="/state" element={<ShowState />} />
         {/* /auth routes */}

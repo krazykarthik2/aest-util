@@ -7,7 +7,10 @@ import { handleCommand } from "./logic";
 import HandleURLSearchParams from "../util/HandleURLSearchParams";
 import Icon from "./Icon";
 
-const Terminal = ({ command, setCommand, setStyle, hidden }) => {
+function reverseIf(arr, boolean = false) {
+  return boolean ? arr.reverse() : arr;
+}
+const Terminal = ({ command, setCommand, setStyle, hidden,setFocus,focus }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { style, history } = useSelector((state) => state.command);
@@ -17,6 +20,13 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
   const inputRef = useRef(null);
   const limit = 3;
 
+  const historyDown = [3, 5].includes(style);
+  
+  useEffect(()=>{
+    if(!focus){
+      inputRef.current.focus();
+    }
+  },[inputRef,focus])
   async function ExecuteCommand(cmd) {
     setTimeout(async () => {
       if (!cmd) return;
@@ -53,9 +63,11 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
     return <span className="text-red-400">&gt;&gt;</span>;
   };
 
-  
   const renderIcon = (command) => {
-    const action = command?.split(" ")?.filter((e) => e)?.[0]?.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
+    const action = command
+      ?.split(" ")
+      ?.filter((e) => e)?.[0]
+      ?.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
     return (
       <span className="text-terminal-accent">
         {action in Icon ? Icon[action] : renderPrompt()}
@@ -66,8 +78,19 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
   function onKeyDown(e) {
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {
       let x = 0;
-      if (e.key == "ArrowUp") x = 1;
-      else if (e.key == "ArrowDown") x = -1;
+      if (historyDown) {
+        if (e.key == "ArrowUp") {
+          x = -1;
+        } else if (e.key == "ArrowDown") {
+          x = 1;
+        }
+      } else {
+        if (e.key == "ArrowUp") {
+          x = 1;
+        } else if (e.key == "ArrowDown") {
+          x = -1;
+        }
+      }
       if (upIndex + x > history.length) return;
       if (upIndex + x < 1) {
         setUpIndex(0);
@@ -92,15 +115,23 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
           className="w-full max-w-2xl mx-auto"
           onClick={() => inputRef.current?.focus()}
         >
-          <div className="w-full terminal-container">
-            <div className="stack">
-              {history
-                .map((entry, index) => ({ entry, index }))
-                .slice(
-                  -(limit - 1 + Math.max(1, upIndex)),
-                  Math.max(limit, history.length - upIndex + 1)
-                )
-                .map(({ entry, index }) => (
+          <div
+            className={
+              "w-full terminal-container flex gap-5 " +
+              (historyDown ? "flex-col-reverse" : "flex-col")
+            }
+          >
+            {history.length > 0 && (
+              <div className="stack">
+                {reverseIf(
+                  history
+                    .map((entry, index) => ({ entry, index }))
+                    .slice(
+                      -(limit - 1 + Math.max(1, upIndex)),
+                      Math.max(limit, history.length - upIndex + 1)
+                    ),
+                  historyDown
+                ).map(({ entry, index }) => (
                   <div
                     key={index}
                     className={
@@ -128,21 +159,21 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
                     </div>
                   </div>
                 ))}
-            </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="flex items-center">
               {renderIcon(command)}
               <input
+                disabled={focus}
                 autoFocus
-                onBlur={(e) => e.target.focus()}
+                onBlur={(e) =>focus?null:e.target.focus()}
                 ref={inputRef}
                 type="text"
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
                 className="flex-1 bg-transparent border-none outline-none text-terminal-white ml-2"
-                placeholder={
-                  style === 1 ? "Enter command..." : "Type a command..."
-                }
+                placeholder="Type a command..."
                 onKeyDown={onKeyDown}
               />
             </form>
@@ -154,6 +185,7 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
         setCommand={setCommand}
         setStyle={setStyle}
         ExecuteCommand={ExecuteCommand}
+        setFocus={setFocus}
       />
     </>
   );

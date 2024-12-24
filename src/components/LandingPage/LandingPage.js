@@ -27,7 +27,7 @@ const allStyles = [
   Style10,
 ];
 
-const Clock = (props) => {
+const LandingPage = (props) => {
   const [time, setTime] = useState(new Date());
   const style = useSelector((state) => state.command.style);
   const dispatch = useDispatch();
@@ -69,4 +69,4 @@ const Clock = (props) => {
   return getFormattedTime();
 };
 
-export default Clock;
+export default LandingPage;

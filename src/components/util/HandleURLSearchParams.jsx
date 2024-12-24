@@ -9,6 +9,7 @@ const HandleURLSearchParams = ({
   setCommand,
   setStyle,
   ExecuteCommand,
+  setFocus,
 }) => {
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const dispatch = useDispatch();
@@ -18,7 +19,10 @@ const HandleURLSearchParams = ({
     const cmd = URLSearchParams.get("cmd");
     const styleParam = URLSearchParams.get("style");
     const do_ = URLSearchParams.get("do");
-
+    const __focus = URLSearchParams.get("focus");
+    if (__focus) {
+      setFocus(__focus=="true");
+    }
     if (do_) {
       const __cmd = decodeURIComponent(do_);
       console.log("Executing inside ?", __cmd);
