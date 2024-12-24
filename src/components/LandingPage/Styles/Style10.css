@@ -5,3 +5,12 @@
 .animation-to-left{
     animation:anim-to-left 1000ms 0s 1 forwards;
 }
+.opacity--{
+    opacity:var(--i);
+}
+.scale--{
+    transform:translateY(calc(5px * 1 / var(--i))) scale( calc(.4 + .6 * var(--i)) );
+}
+.adj-m{
+    margin-left:calc(-2px * 1/var(--i));
+}
