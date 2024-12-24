@@ -45,6 +45,24 @@ function KeyboardMapper() {
       document.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
+  useEffect(()=>{
+
+    const onDocumentBlur = (event)=>{
+      setKey("");
+      setShift(false);
+      setCtrl(false);
+      setAlt(false);
+    }
+    const onDocumentFocus = (event)=>{
+      // console.log(event)
+    }
+    window.addEventListener("focus", onDocumentFocus);
+    window.addEventListener("blur", onDocumentBlur);
+    return () => {
+      window.removeEventListener("focus", onDocumentFocus);
+      window.removeEventListener("blur", onDocumentBlur);
+    };
+  },[])
   const dispatch = useDispatch();
   const setKeyLayoutPreference = (layout) => {
     dispatch(setKeyboardLayout(layout));

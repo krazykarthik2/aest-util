@@ -1,0 +1,7 @@
+@keyframes anim-to-left {
+    0%{ transform:translateX(1rem) ;}
+    100%{ transform: translateX(0);}
+}
+.animation-to-left{
+    animation:anim-to-left 1000ms 0s 1 forwards;
+}

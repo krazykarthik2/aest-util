@@ -50,7 +50,7 @@ const Terminal = ({ command, setCommand, setStyle, hidden }) => {
         </span>
       );
     }
-    return <span className="text-red-400">❯_</span>;
+    return <span className="text-red-400">&gt;&gt;</span>;
   };
 
   

@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import commonthousand from "../../assets/most-common-1000.txt";
 import {
   captializeOptions,
   modeOptions,
@@ -19,29 +18,20 @@ import {
 import "./TypingPage.css";
 import { getFormattedText } from "./util";
 import { getRandomQuote } from "../../util/jsutil";
-async function getRandomWords(number = 50) {
-  try {
-    const response = await axios.get(commonthousand);
-    const words = response.data.split("\n");
-    const randomWords = words.sort(() => Math.random() - 0.5).slice(0, number);
-    return randomWords;
-  } catch (error) {
-    console.error("Error fetching random text:", error);
-    return "";
-  }
-}
+import { getRandomWords } from "../../util/jsutil";
 const treatSpace = (str, to_show = true) => {
   return to_show ? str.replaceAll(/\s/g, "_") : str;
 };
 export function alternateDiff(source, change) {
-  let is_same = true;
+  
   let list = [];
   let diff_list = [];
   if (change == "") {
     diff_list.push(null);
     list.push([source]);
   } else {
-    diff_list.push(true);
+    let is_same = source[0]==change[0];
+    diff_list.push(is_same);
     for (let i = 0; i < source.length; i++) {
       if (i >= change.length) {
         list.push([]);
@@ -76,8 +66,8 @@ export function alternateDiff(source, change) {
 
 window.alternateDiff = alternateDiff;
 
-export const Cursor = ({__ref}) => {
-  return <div className="h-7 w-1 bg-[var(--accent-color)] animate-pulse" ref={__ref}></div>;
+export const Cursor = ({__ref,className=""}) => {
+  return <div className={"h-7 w-1 bg-[var(--accent-color)] animate-pulse "+className} ref={__ref}></div>;
 };
 function EachList({ e, i, list_spaced, diff_list }) {
   const CursorRef = React.useRef(null);

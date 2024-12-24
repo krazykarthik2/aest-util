@@ -50,3 +50,8 @@ export const getFormattedText = (select, capitalize, punc, num) => {
   }
   return select;
 };
+export const withoutLast =( arr)=>{
+  let x = arr?.slice(0, arr.length - 1);
+  return x
+}
+

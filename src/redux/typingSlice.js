@@ -12,18 +12,22 @@ const initialState = {
         words: 50,
       },
     },
+    tape: {
+      move: "letter", //letter,word
+    },
     keyboard: {
       layout: "alphabet", //alphabet, alphanumeric, all
-      delay:0,
+      delay: 0,
     },
   },
 };
 export const timeLimitOptions = [15, 30, 60, 120];
-export const modeOptions = ["timeLimit", "words","quote"];
-export const wordOptions = [25, 50, 100,150];
+export const modeOptions = ["timeLimit", "words", "quote"];
+export const wordOptions = [25, 50, 100, 150];
 export const captializeOptions = ["capital", "small", "word", "sentence"];
 export const LayoutOptions = ["alphabet", "alphanumeric", "all"];
-export const delayOptions = [0,100,250,500,1000,2000]
+export const delayOptions = [0, 100, 250, 500, 1000, 2000];
+export const tapeModeOptions = ["letter", "word"];
 export const typingSlice = createSlice({
   name: "user",
   initialState,
@@ -44,11 +48,13 @@ export const typingSlice = createSlice({
       return { ...state, ...action.payload };
     },
     setKeyboardLayout: (state, action) => {
-      if(!("keyboard" in state.preferences)) state.preferences.keyboard = initialState.preferences.keyboard;
+      if (!("keyboard" in state.preferences))
+        state.preferences.keyboard = initialState.preferences.keyboard;
       state.preferences.keyboard.layout = action.payload;
     },
-    setKeyboardDelay : (state, action) => {
-      if(!("keyboard" in state.preferences)) state.preferences.keyboard = initialState.preferences.keyboard;
+    setKeyboardDelay: (state, action) => {
+      if (!("keyboard" in state.preferences))
+        state.preferences.keyboard = initialState.preferences.keyboard;
       state.preferences.keyboard.delay = action.payload;
     },
     setTypingMode: (state, action) => {
@@ -56,6 +62,9 @@ export const typingSlice = createSlice({
     },
     setWords: (state, action) => {
       state.preferences.typing.typesetting.words = action.payload;
+    },
+    setTapeModeMovePref: (state, action) => {
+      state.preferences.tape.move = action.payload;
     },
   },
 });
@@ -69,7 +78,8 @@ export const {
   setKeyboardLayout,
   setKeyboardDelay,
   setTypingMode,
-  setWords
+  setWords,
+  setTapeModeMovePref,
 } = typingSlice.actions;
 
 export const selectTypingSettings = (state) =>
@@ -77,5 +87,6 @@ export const selectTypingSettings = (state) =>
 export const selectKeyboardLayout = (state) =>
   state.user.preferences.keyboard.layout;
 export const selectKeyboardDelay = (state) =>
-  state.user.preferences.keyboard.delay; 
+  state.user.preferences.keyboard.delay;
+export const selectTapeMode = (state) => state.user.preferences.tape;
 export default typingSlice.reducer;
