@@ -41,7 +41,7 @@ export const VersionBtn = () => (
     <div className="d-center absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2">
       <FaCodeBranch size={25} />
     </div>
-    <span className="text-2xl font-bold">21.2.3</span>
+    <span className="text-2xl font-bold">2.1.4</span>
   </div>
 );
 
