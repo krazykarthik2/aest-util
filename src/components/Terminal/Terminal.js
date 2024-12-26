@@ -10,7 +10,14 @@ import Icon from "./Icon";
 function reverseIf(arr, boolean = false) {
   return boolean ? arr.reverse() : arr;
 }
-const Terminal = ({ command, setCommand, setStyle, hidden,setFocus,focus }) => {
+const Terminal = ({
+  command,
+  setCommand,
+  setStyle,
+  hidden,
+  setFocus,
+  focus,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { style, history } = useSelector((state) => state.command);
@@ -21,12 +28,12 @@ const Terminal = ({ command, setCommand, setStyle, hidden,setFocus,focus }) => {
   const limit = 3;
 
   const historyDown = [3, 5].includes(style);
-  
-  useEffect(()=>{
-    if(!focus){
-      inputRef.current.focus();
+
+  useEffect(() => {
+    if (!focus) {
+      if (inputRef.current) inputRef.current.focus();
     }
-  },[inputRef,focus])
+  }, [inputRef, focus]);
   async function ExecuteCommand(cmd) {
     setTimeout(async () => {
       if (!cmd) return;
@@ -167,7 +174,7 @@ const Terminal = ({ command, setCommand, setStyle, hidden,setFocus,focus }) => {
               <input
                 disabled={focus}
                 autoFocus
-                onBlur={(e) =>focus?null:e.target.focus()}
+                onBlur={(e) => (focus ? null : e.target.focus())}
                 ref={inputRef}
                 type="text"
                 value={command}
