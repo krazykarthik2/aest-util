@@ -76,7 +76,7 @@ const Terminal = ({
       ?.split(" ")
       ?.filter((e) => e)?.[0]
       ?.replaceAll(/[^a-zA-Z0-9.?#]+/g, "");
-    const firstLetter = action?.[0].toLowerCase();
+    const firstLetter = action?.[0]?.toLowerCase();
     return (
       <span className="text-terminal-accent">
         {firstLetter in IconShort

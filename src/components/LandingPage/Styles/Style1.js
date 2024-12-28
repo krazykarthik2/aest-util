@@ -5,19 +5,23 @@ import Floating from "../../util/Floating/Floating";
 const Recommend = ({ value }) => {
   return (
     <div className="relative w-full h-full d-center stack">
-      <Floating children={value.map((v, i) => (
-        <div
-          key={v}
-          className="text-3xl font-bold text-white w-full d-center stack h-full text-3xl"
-        >
-          {v}
-        </div>
-      ))}/>
+      <Floating
+        children={value.map((v, i) => ({
+          el: (
+            <div
+              className="text-3xl font-bold text-white w-full d-center stack h-full text-3xl"
+            >
+              {v}
+            </div>
+          ),
+          key: v,
+        }))}
+      />
     </div>
   );
 };
 const Style1 = ({ hours, minutes, props, dispatch }) => (
-  <div className="flex justify-between items-stretch h-screen">
+  <div className="flex justify-between items-stretch h-screen w-screen overflow-hidden">
     <div className="left justify-between h-full stack items-center px-5 py-10">
       <div className="top"></div>
       <div className="middle"></div>
