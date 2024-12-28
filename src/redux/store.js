@@ -93,7 +93,7 @@ const initializeStore = async () => {
       new Promise((_, reject) =>
         setTimeout(
           () => reject(new Error("Store initialization timeout")),
-          2000
+          7000
         )
       ),
     ]);

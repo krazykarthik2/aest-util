@@ -96,11 +96,7 @@ const Style11 = ({ hours, minutes, props, dispatch }) => {
           </div>
         </div>
         <div className="bottom">
-          {timeLeft > 0 && (
-            <div className="parts-100 d-center gap-2 blur-sm">
-              <Balls value={1 - timeLeft / (toTime - fromTime)} total={20} />
-            </div>
-          )}
+          
           <Terminal {...props} hidden />
         </div>
       </div>
@@ -116,6 +112,13 @@ const Style11 = ({ hours, minutes, props, dispatch }) => {
         </div>
         <div className="bottom d-center">
           <LoggedinAs />
+        </div>
+        <div className="astable">
+          {timeLeft > 0 && (
+            <div className="parts-100 d-center gap-2 blur-sm">
+              <Balls value={1 - timeLeft / (toTime - fromTime)} total={20} />
+            </div>
+          )}
         </div>
       </div>
     </div>
