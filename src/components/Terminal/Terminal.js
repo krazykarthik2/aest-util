@@ -17,6 +17,7 @@ const Terminal = ({
   hidden,
   setFocus,
   focus,
+  ...props
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -188,11 +189,14 @@ const Terminal = ({
         </div>
       )}
       <HandleURLSearchParams
-        command={command}
-        setCommand={setCommand}
-        setStyle={setStyle}
-        ExecuteCommand={ExecuteCommand}
-        setFocus={setFocus}
+        {...{
+          command,
+          setCommand,
+          setStyle,
+          ExecuteCommand,
+          setFocus,
+          ...props,
+        }}
       />
     </>
   );

@@ -1,0 +1,16 @@
+.ball {
+  transition: all 0.5s;
+  margin: 0px;
+}
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 #fff6;
+    }
+    100% {
+        box-shadow: 0 0 0 10px #0000;
+    }
+}
+.ball.active {
+  margin:0 20px;
+  animation:pulse 1s infinite;
+}

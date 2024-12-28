@@ -10,6 +10,7 @@ const HandleURLSearchParams = ({
   setStyle,
   ExecuteCommand,
   setFocus,
+  setTimer,
 }) => {
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const dispatch = useDispatch();
@@ -20,8 +21,15 @@ const HandleURLSearchParams = ({
     const styleParam = URLSearchParams.get("style");
     const do_ = URLSearchParams.get("do");
     const __focus = URLSearchParams.get("focus");
+    const timerParamfrom = URLSearchParams.get("timerfrom");
+    const timerParamto = URLSearchParams.get("timerto");
     if (__focus) {
       setFocus(__focus=="true");
+    }
+    if(timerParamfrom && timerParamto){
+      const from = parseInt(timerParamfrom);
+      const to = parseInt(timerParamto);
+      setTimer({from,to});
     }
     if (do_) {
       const __cmd = decodeURIComponent(do_);

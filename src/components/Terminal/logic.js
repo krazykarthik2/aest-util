@@ -1,5 +1,5 @@
 import { setStyle } from "../../redux/commandSlice";
-
+import { getRandomQuote } from "../../util/jsutil";
 const links = {
   qrimg: "/qrimgutil",
   state: "/state",
@@ -20,6 +20,42 @@ const links = {
   bash: "/terminal?style=10",
   shell: "/terminal?style=10",
   sh: "/terminal?style=10",
+};
+const utillinksActual = {
+  timer: (...args) => {
+    const InvalidTime = new Error("Invalid time");
+    if (args.length) {
+      args = args
+        .join("")
+        .split(/[.:/s]/g)
+        .filter((arg) => arg)
+      let time = 0,d=0,h=0,m=0,s=0
+      for(let i = 0; i < args.length; i++) {
+        if (args[i] < 0) throw InvalidTime;
+        if ( i>3 ) throw InvalidTime;
+        if (args[i].endsWith("d")) {
+          d = parseInt(args[i].slice(0, -1));
+        } else if (args[i].endsWith("h")) {
+          h = parseInt(args[i].slice(0, -1));
+        } else if (args[i].endsWith("m")) {
+          m = parseInt(args[i].slice(0, -1));
+        } else if (args[i].endsWith("s")) {
+          s = parseInt(args[i].slice(0, -1));
+        } else {
+          s = parseInt(args[i]);
+        }
+      }
+      time = d * 86400 + h * 3600 + m * 60 + s;
+      return "/timer?style=11&timerto=" +( Date.now() + (time * 1000)) + "&timerfrom=" + Date.now();
+    } else return "/timer";
+  },
+};
+const utillinksAlias = {
+  countdown: utillinksActual.timer,
+};
+const utillinks = {
+  ...utillinksActual,
+  ...utillinksAlias,
 };
 const ignoreCommands = ["qr"];
 
@@ -165,13 +201,6 @@ const convert_currency = async (amount, from, to) => {
   console.log(res);
   return res.data[to];
 };
-const getQuotes = async (number = 1) => {
-  const url = "https://dummyjson.com/quotes/random/" + number;
-  let res = await fetch(url);
-  res = await res.json();
-  console.log(res);
-  return res;
-};
 const asyncUtilCommands = {
   convert: async (...args) => {
     if (args.length === 3) {
@@ -196,7 +225,7 @@ const asyncUtilCommands = {
     }
   },
   quote: async (...args) => {
-    const q = await getQuotes(1);
+    const q = await getRandomQuote(1);
     return q[0].quote + "\n~" + q[0].author;
   },
 };
@@ -225,7 +254,7 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
         result = eval(e.join(" "));
       } catch (error) {
         console.log(error.message);
-        result = "error:"+error.message;
+        result = "error:" + error.message;
       } finally {
         return [true, result];
       }
@@ -248,6 +277,8 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
     action = action.toLowerCase();
     if (action in links) {
       navigate(links[action]);
+    } else if (action in utillinks) {
+      navigate(utillinks[action](...args));
     } else if (action in externalLinks) {
       openNewTab(externalLinks[action]);
     } else if (action in externalSearchLinks) {

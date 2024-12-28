@@ -13,6 +13,7 @@ const Style7 = lazy(() => import("./Styles/Style7"));
 const Style8 = lazy(() => import("./Styles/Style8"));
 const Style9 = lazy(() => import("./Styles/Style9"));
 const Style10 = lazy(() => import("./Styles/Style10"));
+const Style11 = lazy(() => import("./Styles/Style11"));
 
 const allStyles = [
   Style1,
@@ -25,6 +26,7 @@ const allStyles = [
   Style8,
   Style9,
   Style10,
+  Style11
 ];
 
 const LandingPage = (props) => {

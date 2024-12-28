@@ -31,12 +31,15 @@ function App() {
   const { style } = useSelector((state) => state.command);
   const [command, setCommand] = useState("");
   const [focus, setFocus] = useState(false);
+  const [timer, setTimer] = useState(0);
   const terminalProps = {
     command: command,
     setCommand: setCommand,
     setStyle: setStyle,
     setFocus: setFocus,
     focus: focus,
+    timer: timer,
+    setTimer: setTimer,
   };
   return (
     <Router>
@@ -46,6 +49,7 @@ function App() {
         <Route path="/init" element={<Navigate to="/terminal" />} />
         <Route path="/clock" element={<LandingPage {...terminalProps} />} />
         <Route path="/keyboard" element={<LandingPage {...terminalProps} />} />
+        <Route path="/timer" element={<LandingPage {...terminalProps} />} />
         <Route path="/terminal" element={<TerminalPage {...terminalProps} />} />
         <Route path="">
           <Route path="1" element={<Navigate to={"/clock?style=1"} />} />
