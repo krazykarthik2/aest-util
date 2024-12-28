@@ -28,11 +28,15 @@ const utillinksActual = {
       args = args
         .join("")
         .split(/[.:/s]/g)
-        .filter((arg) => arg)
-      let time = 0,d=0,h=0,m=0,s=0
-      for(let i = 0; i < args.length; i++) {
+        .filter((arg) => arg);
+      let time = 0,
+        d = 0,
+        h = 0,
+        m = 0,
+        s = 0;
+      for (let i = 0; i < args.length; i++) {
         if (args[i] < 0) throw InvalidTime;
-        if ( i>3 ) throw InvalidTime;
+        if (i > 3) throw InvalidTime;
         if (args[i].endsWith("d")) {
           d = parseInt(args[i].slice(0, -1));
         } else if (args[i].endsWith("h")) {
@@ -46,7 +50,12 @@ const utillinksActual = {
         }
       }
       time = d * 86400 + h * 3600 + m * 60 + s;
-      return "/timer?style=11&timerto=" +( Date.now() + (time * 1000)) + "&timerfrom=" + Date.now();
+      return (
+        "/timer?style=11&timerto=" +
+        (Date.now() + time * 1000) +
+        "&timerfrom=" +
+        Date.now()
+      );
     } else return "/timer";
   },
 };
@@ -273,7 +282,7 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   if (action.startsWith("https://")) {
     openNewTab(action + args.join(" "));
   } else {
-    action = action.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
+    action = action.replaceAll(/[^a-zA-Z0-9.]+/g, "");
     action = action.toLowerCase();
     if (action in links) {
       navigate(links[action]);
@@ -310,3 +319,12 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
 
   return `command executed:${action}`;
 }
+
+const AllCommands =[
+  ...Object.keys(links),
+  ...Object.keys(utillinks),
+  ...Object.keys(externalLinks),
+  ...Object.keys(externalSearchLinks),
+  ...Object.keys(asyncUtilCommands),
+]
+export { AllCommands };

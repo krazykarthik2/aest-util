@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Navigate,
@@ -26,12 +26,14 @@ import { ToastContainer } from "react-toastify";
 import HandleKeyPress from "./components/util/HandleKeyPress";
 import TerminalPage from "./components/TerminalPage/TerminalPage";
 import Help from "./components/Help/Help";
+import { AllCommands } from "./components/Terminal/logic";
 function App() {
   const dispatch = useDispatch();
   const { style } = useSelector((state) => state.command);
   const [command, setCommand] = useState("");
   const [focus, setFocus] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [recommend, setRecommend] = useState(false);
   const terminalProps = {
     command: command,
     setCommand: setCommand,
@@ -40,7 +42,12 @@ function App() {
     focus: focus,
     timer: timer,
     setTimer: setTimer,
+    recommend: recommend,
+    setRecommend: setRecommend,
   };
+  useEffect(() => {
+    setRecommend(command?AllCommands.filter((c) => c.startsWith(command)):[]);
+  }, [command]);
   return (
     <Router>
       <HandleKeyPress focus={focus} />

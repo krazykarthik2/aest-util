@@ -9,6 +9,7 @@ import {
   FaFolder,
   FaGoogleDrive,
   FaHistory,
+  FaJs,
   FaLock,
   FaPhone,
   FaTwitter,
@@ -162,4 +163,9 @@ const Icon = {
   ...externalSearchLinks,
   ...switchExecution,
 };
+const IconShort = {
+  "?":<FaGoogle />,
+  "#":<FaJs/>
+};
+export { IconShort };
 export default Icon;

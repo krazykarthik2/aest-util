@@ -1,42 +1,60 @@
 import React from "react";
 import Terminal from "../../Terminal/Terminal";
 import { GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
-
-const Style1 = ({hours,minutes,props,dispatch}) => (
-    <div className="flex justify-between items-stretch h-screen">
-      <div className="left justify-between h-full stack items-center px-5 py-10">
-        <div className="top"></div>
-        <div className="middle"></div>
-        <div className="bottom">
-          <ShareBtn />
+import Floating from "../../util/Floating/Floating";
+const Recommend = ({ value }) => {
+  return (
+    <div className="relative w-full h-full d-center stack">
+      <Floating children={value.map((v, i) => (
+        <div
+          key={v}
+          className="text-3xl font-bold text-white w-full d-center stack h-full text-3xl"
+        >
+          {v}
         </div>
+      ))}/>
+    </div>
+  );
+};
+const Style1 = ({ hours, minutes, props, dispatch }) => (
+  <div className="flex justify-between items-stretch h-screen">
+    <div className="left justify-between h-full stack items-center px-5 py-10">
+      <div className="top"></div>
+      <div className="middle"></div>
+      <div className="bottom">
+        <ShareBtn />
       </div>
-      <div className="middle justify-between w-full h-full stack items-center py-10">
-        <div className="top"></div>
-        <div className="middle">
+    </div>
+    <div className="middle justify-between w-full h-full stack items-center py-10">
+      <div className="top"></div>
+      <div className="middle d-center w-full">
+        {props.recommend.length ? (
+          <Recommend value={props.recommend} />
+        ) : (
           <div className="text-9xl scale-[1.5] font-bold text-white w-full d-center stack h-full text-3xl">
             <div className="hours">{hours}</div>
             <div className="minutes">{minutes}</div>
           </div>
-        </div>
-        <div className="bottom stack d-center gap-10 w-full">
-          <div className="terminal d-center w-full">
-            <Terminal {...props} />
-          </div>
-          <div className="github">
-            <GithubBtn />
-            <LoggedinAs />
-          </div>
-        </div>
+        )}
       </div>
-      <div className="right justify-between h-full stack items-center px-5 py-10">
-        <div className="top"></div>
-        <div className="middle"></div>
-        <div className="bottom">
-          <VersionBtn />
+      <div className="bottom stack d-center gap-10 w-full">
+        <div className="terminal d-center w-full">
+          <Terminal {...props} />
+        </div>
+        <div className="github">
+          <GithubBtn />
+          <LoggedinAs />
         </div>
       </div>
     </div>
-  );
-  
-export default Style1
+    <div className="right justify-between h-full stack items-center px-5 py-10">
+      <div className="top"></div>
+      <div className="middle"></div>
+      <div className="bottom">
+        <VersionBtn />
+      </div>
+    </div>
+  </div>
+);
+
+export default Style1;

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { handleCommand } from "./logic";
 import HandleURLSearchParams from "../util/HandleURLSearchParams";
-import Icon from "./Icon";
+import Icon, { IconShort } from "./Icon";
 
 function reverseIf(arr, boolean = false) {
   return boolean ? arr.reverse() : arr;
@@ -75,10 +75,17 @@ const Terminal = ({
     const action = command
       ?.split(" ")
       ?.filter((e) => e)?.[0]
-      ?.replaceAll(/[^a-zA-Z0-9.?]+/g, "");
+      ?.replaceAll(/[^a-zA-Z0-9.?#]+/g, "");
+    const firstLetter = action?.[0].toLowerCase();
     return (
       <span className="text-terminal-accent">
-        {action in Icon ? Icon[action] : renderPrompt()}
+        {firstLetter in IconShort
+          ? IconShort[firstLetter]
+          : (
+            action in Icon
+          ? Icon[action]
+          : renderPrompt()
+          )}
       </span>
     );
   };
