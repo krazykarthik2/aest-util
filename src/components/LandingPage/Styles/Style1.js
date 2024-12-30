@@ -2,19 +2,19 @@ import React from "react";
 import Terminal from "../../Terminal/Terminal";
 import { GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
 import Floating from "../../util/Floating/Floating";
-const Recommend = ({ value }) => {
+const Recommend = ({ value, cmd }) => {
   return (
     <div className="relative w-full h-full d-center stack">
       <Floating
         children={value.map((v, i) => ({
           el: (
-            <div
-              className="text-3xl font-bold text-white w-full d-center stack h-full text-3xl"
-            >
-              {v}
+            <div className="text-3xl w-full d-center h-full ">
+              <div className="text-white">{cmd}</div>
+              <div className="text-gray-400">{v.substring(cmd.length)}</div>
             </div>
           ),
           key: v,
+          render:cmd.length
         }))}
       />
     </div>
@@ -33,7 +33,7 @@ const Style1 = ({ hours, minutes, props, dispatch }) => (
       <div className="top"></div>
       <div className="middle d-center w-full">
         {props.recommend.length ? (
-          <Recommend value={props.recommend} />
+          <Recommend value={props.recommend} cmd={props.command} />
         ) : (
           <div className="text-9xl scale-[1.5] font-bold text-white w-full d-center stack h-full text-3xl">
             <div className="hours">{hours}</div>

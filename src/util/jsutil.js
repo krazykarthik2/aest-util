@@ -2,12 +2,14 @@ import axios from "axios";
 import quoteFile from "../assets/quotes.txt";
 import commonthousand from "../assets/most-common-1000.txt";
 
+export const isExtension = () => {
+  return window.location.origin.startsWith("chrome-extension://");
+}
 export const getBackendUrl = () => {
-  return window.location.origin.startsWith("chrome-extension://")
+  return isExtension()
     ? process.env.REACT_APP_EXTENSION_API_URL
     : process.env.REACT_APP_API_URL;
 };
-
 export function generateRandomCode(length = 16) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

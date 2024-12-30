@@ -1,5 +1,5 @@
 import { setStyle } from "../../redux/commandSlice";
-import { getRandomQuote } from "../../util/jsutil";
+import { getRandomQuote, isExtension } from "../../util/jsutil";
 const links = {
   qrimg: "/qrimgutil",
   state: "/state",
@@ -95,18 +95,20 @@ const appLinks = {
 const actualExternalLinks = {
   colab: "https://colab.research.google.com/",
   gpt: "https://chatgpt.com/",
-  "chrome.settings": "chrome://settings/",
-  "chrome.bookmarks": "chrome://bookmarks/",
-  "chrome.history": "chrome://history/",
-  "chrome.downloads": "chrome://downloads/",
-  "chrome.passwords": "chrome://password-manager",
-  "chrome.extensions": "chrome://extensions/",
   "web.whatsapp": "https://web.whatsapp.com/",
   instagram: "https://www.instagram.com/",
   facebook: "https://www.facebook.com/",
   twitter: "https://twitter.com/",
   tailwind: "https://tailwindcss.com/docs",
 };
+const extensionOnlyLinks = {
+  "chrome.settings": "chrome://settings/",
+  "chrome.bookmarks": "chrome://bookmarks/",
+  "chrome.history": "chrome://history/",
+  "chrome.downloads": "chrome://downloads/",
+  "chrome.passwords": "chrome://password-manager",
+  "chrome.extensions": "chrome://extensions/",
+}
 const aliasExternalLinks = {
   chatgpt: actualExternalLinks.gpt,
   openai: actualExternalLinks.gpt,
@@ -284,6 +286,13 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   } else {
     action = action.replaceAll(/[^a-zA-Z0-9.]+/g, "");
     action = action.toLowerCase();
+
+    if(isExtension() ){
+      if(action in extensionOnlyLinks){
+        openNewTab(extensionOnlyLinks[action]);
+        return null;
+      }
+    }
     if (action in links) {
       navigate(links[action]);
     } else if (action in utillinks) {
@@ -321,6 +330,7 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
 }
 
 const AllCommands =[
+  ...Object.keys(extensionOnlyLinks),
   ...Object.keys(links),
   ...Object.keys(utillinks),
   ...Object.keys(externalLinks),

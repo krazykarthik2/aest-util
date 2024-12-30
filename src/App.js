@@ -90,7 +90,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/terminal" />} />
+        <Route path="*" element={<Navigate to="/clock?style=1" />} />
       </Routes>
       <ToastContainer />
     </Router>

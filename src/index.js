@@ -6,6 +6,7 @@ import './index.css';
 import './fonts.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { isExtension } from './util/jsutil';
 
 // Create a StoreProvider component that waits for the store
 const StoreProvider = ({ children }) => {
@@ -27,7 +28,7 @@ const StoreProvider = ({ children }) => {
 
   return <Provider store={store}>{children}</Provider>;
 };
-document.title = window.location.origin.startsWith("chrome-extension://") ? "New Terminal" :"Teja util"
+document.title = isExtension() ? "New Terminal" :"Teja util"
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
