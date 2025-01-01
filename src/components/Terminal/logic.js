@@ -68,20 +68,60 @@ const utillinks = {
 };
 const ignoreCommands = ["qr"];
 
+
+const processArgsWhatsapp = (...args)=>{
+  args = args.join(" ");
+  return "send?text="+encodeURI(args);
+}
+const processArgsFigma = (...args)=>{
+  
+}
+const processArgsCamera = (...args)=>{
+  
+}
+const processArgsSpotify = (...args)=>{
+  
+}
+const processArgsNotion = (...args)=>{
+  
+}
+const processArgsNotepad = (...args)=>{
+  
+}
+const processArgsExplorer = (...args)=>{
+  
+}
+const processArgsVscode = (...args)=>{
+  
+}
+const processArgsWindsurf = (...args)=>{
+  
+}
+const processArgsTelegram = (...args)=>{
+  
+}
+const processArgsDiscord = (...args)=>{
+  
+}
+const processArgsLink = (...args)=>{
+  
+}
+
 const actualAppLinks = {
-  whatsapp: "whatsapp://",
-  figma: "figma://",
-  camera: "camera://",
-  spotify: "spotify://",
-  notion: "notion://",
-  notepad: "notepad://",
-  explorer: "explorer://",
-  vscode: "vscode://",
-  windsurf: "windsurf://",
-  telegram: "tg://",
-  discord: "discord://",
-  phonelink: "ms-phone://",
+  whatsapp:(...args)=>args.length? "whatsapp://"+processArgsWhatsapp(args): "whatsapp://",
+  figma:(...args)=>args.length? "figma://"+processArgsFigma(args): "figma://",
+  camera:(...args)=>args.length? "camera://"+processArgsCamera(args): "camera://",
+  spotify:(...args)=>args.length? "spotify://"+processArgsSpotify(args): "spotify://",
+  notion:(...args)=>args.length? "notion://"+processArgsNotion(args): "notion://",
+  notepad:(...args)=>args.length? "notepad://"+processArgsNotepad(args): "notepad://",
+  explorer:(...args)=>args.length? "explorer://"+processArgsExplorer(args): "explorer://",
+  vscode:(...args)=>args.length? "vscode://"+processArgsVscode(args): "vscode://",
+  windsurf:(...args)=>args.length? "windsurf://"+processArgsWindsurf(args): "windsurf://",
+  telegram:(...args)=>args.length? "tg://"+processArgsTelegram(args): "tg://",
+  discord:(...args)=>args.length? "discord://"+processArgsDiscord(args): "discord://",
+  phonelink:(...args)=>args.length? "ms-phone://"+processArgsLink(args): "phonelinkms-phone://",
 };
+
 const aliasAppLinks = {
   code: actualAppLinks.vscode,
   files: actualAppLinks.explorer,
@@ -108,7 +148,7 @@ const extensionOnlyLinks = {
   "chrome.downloads": "chrome://downloads/",
   "chrome.passwords": "chrome://password-manager",
   "chrome.extensions": "chrome://extensions/",
-}
+};
 const aliasExternalLinks = {
   chatgpt: actualExternalLinks.gpt,
   openai: actualExternalLinks.gpt,
@@ -119,7 +159,6 @@ const aliasExternalLinks = {
 const externalLinks = {
   ...actualExternalLinks,
   ...aliasExternalLinks,
-  ...appLinks,
 };
 const actualExternalSearchLinks = {
   perplexity: (...args) =>
@@ -140,7 +179,9 @@ const actualExternalSearchLinks = {
       : "https://duckduckgo.com",
   github: (...args) =>
     args.length
-      ? "https://github.com/search?q=" + encodeURI(args.join(" "))
+      ? (args.length == 1 && args[0].trim().startsWith("/"))
+        ? "https://github.com" + args[0].trim()
+        : "https://github.com/search?q=" + encodeURI(args.join(" "))
       : "https://github.com",
   kaggle: (...args) =>
     args.length
@@ -179,6 +220,15 @@ const actualExternalSearchLinks = {
     args.length
       ? "https://linkedin.com/in/" + args.join(" ")
       : "https://linkedin.com/profile",
+  icon: (...args) =>
+    args.length
+      ? "https://fontawesome.com/search?q=" + encodeURI(args.join(" "))
+      : "https://fontawesome.com",
+  "react-icon": (...args) =>
+    args.length
+      ? "https://react-icons.github.io/react-icons/search#q=" +
+        encodeURI(args.join(" "))
+      : "https://react-icons.github.io/react-icons",
 };
 const aliasExternalSearchLinks = {
   ai: actualExternalSearchLinks.perplexity,
@@ -191,10 +241,13 @@ const aliasExternalSearchLinks = {
   leet: actualExternalSearchLinks.leetcode,
   "leet.profile": actualExternalSearchLinks["leetcode.profile"],
   "leet.u": actualExternalSearchLinks["leetcode.profile"],
+  icons: actualExternalSearchLinks.icon,
+  "react-icons": actualExternalSearchLinks["react-icon"],
 };
 const externalSearchLinks = {
   ...actualExternalSearchLinks,
   ...aliasExternalSearchLinks,
+  ...appLinks,
 };
 const openNewTab = (address) => {
   if (address.startsWith("chrome://")) {
@@ -284,11 +337,11 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   if (action.startsWith("https://")) {
     openNewTab(action + args.join(" "));
   } else {
-    action = action.replaceAll(/[^a-zA-Z0-9.]+/g, "");
+    action = action.replaceAll(/[^a-zA-Z0-9.-]+/g, "");
     action = action.toLowerCase();
 
-    if(isExtension() ){
-      if(action in extensionOnlyLinks){
+    if (isExtension()) {
+      if (action in extensionOnlyLinks) {
         openNewTab(extensionOnlyLinks[action]);
         return null;
       }
@@ -329,12 +382,12 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   return `command executed:${action}`;
 }
 
-const AllCommands =[
+const AllCommands = [
   ...Object.keys(extensionOnlyLinks),
   ...Object.keys(links),
   ...Object.keys(utillinks),
   ...Object.keys(externalLinks),
   ...Object.keys(externalSearchLinks),
   ...Object.keys(asyncUtilCommands),
-]
+];
 export { AllCommands };

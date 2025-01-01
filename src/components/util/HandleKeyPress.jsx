@@ -17,7 +17,7 @@ const HandleKeyPress = ({ focus }) => {
         if (e.key === "0") navigate("/keyboard?style=10");
       }
     }
-    if (e.key == "/") {
+    if (e.key === "F4") {
       navigate("?focus="+!focus);
       setFocusKey(focus);
     }

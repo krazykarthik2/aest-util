@@ -7,11 +7,14 @@ import {
   FaDownload,
   FaFacebook,
   FaFolder,
+  FaFontAwesome,
   FaGoogleDrive,
   FaHistory,
   FaJs,
   FaLock,
   FaPhone,
+  FaReact,
+  FaTerminal,
   FaTwitter,
   FaWpexplorer
 } from "react-icons/fa";
@@ -32,7 +35,7 @@ import {
   FaWhatsapp,
   FaYoutube
 } from "react-icons/fa6";
-import { FiLogIn, FiLogOut, FiTerminal } from "react-icons/fi";
+import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { IoExtensionPuzzleSharp } from "react-icons/io5";
 import { LiaBroomSolid } from "react-icons/lia";
 import { LuBrainCircuit, LuNotepadText, LuPaintbrushVertical } from "react-icons/lu";
@@ -43,7 +46,8 @@ import {
   SiLeetcode,
   SiNotion,
   SiPerplexity,
-  SiPypi
+  SiPypi,
+  SiTailwindcss
 } from "react-icons/si";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { VscVscode } from "react-icons/vsc";
@@ -62,11 +66,11 @@ const links = {
   "auth.totp.enable": <SiGoogleauthenticator />,
   clock: <CiClock2 />,
   "clock.zen": <CiClock2 />,
-  terminal: <FiTerminal />,
-  cmd: <FiTerminal />,
-  bash: <FiTerminal />,
-  shell: <FiTerminal />,
-  sh: <FiTerminal />,
+  terminal: <FaTerminal />,
+  cmd: <FaTerminal />,
+  bash: <FaTerminal />,
+  shell: <FaTerminal />,
+  sh: <FaTerminal />,
 };
 const ignoreCommands = ["qr"];
 const actualAppLinks = {
@@ -79,7 +83,7 @@ const actualAppLinks = {
   notion: <SiNotion />,
   notepad: <LuNotepadText />,
   explorer: <FaFolder />,
-  windsurf: <FaWpexplorer />,
+  windsurf: <VscVscode />,
   discord: <FaDiscord />,
   phonelink: <FaPhone />,
 };
@@ -105,6 +109,7 @@ const actualExternalLinks = {
   instagram: <FaInstagram />,
   facebook: <FaFacebook />,
   twitter: <FaTwitter />,
+  tailwind:<SiTailwindcss />,
 };
 const aliasExternalLinks = {
   chatgpt: actualExternalLinks.gpt,
@@ -133,6 +138,8 @@ const actualExternalSearchLinks = {
   "leetcode.profile": <SiLeetcode />,
   linkedin: <FaLinkedin />,
   "linkedin.profile": <FaLinkedin />,
+  "icon":<FaFontAwesome />,
+  "react-icon":<FaReact />
 };
 const aliasExternalSearchLinks = {
   ai: actualExternalSearchLinks.perplexity,
@@ -145,7 +152,8 @@ const aliasExternalSearchLinks = {
   leet: actualExternalSearchLinks.leetcode,
   "leet.profile": actualExternalSearchLinks["leetcode.profile"],
   "leet.u": actualExternalSearchLinks["leetcode.profile"],
-  "?": actualExternalSearchLinks.google,
+  "icons":actualExternalSearchLinks.icon,
+  "react-icons":actualExternalSearchLinks["react-icon"]
 };
 const externalSearchLinks = {
   ...actualExternalSearchLinks,

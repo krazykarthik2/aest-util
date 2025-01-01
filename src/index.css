@@ -14,6 +14,7 @@ body {
   @apply bg-terminal-black text-terminal-white min-h-screen m-0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
@@ -22,7 +23,7 @@ code {
 }
 
 .terminal-container {
-  @apply bg-terminal-gray rounded-lg p-4 shadow-lg;
+  @apply bg-[#fff4] backdrop-blur-lg rounded-lg p-4 shadow-lg;
 }
 
 .terminal-input {
@@ -43,6 +44,11 @@ code {
 
 .clock {
   @apply fixed top-4 right-4 bg-terminal-gray rounded-lg p-2 shadow-lg flex items-center z-40;
+}
+
+
+.d-center{
+  @apply flex items-center justify-center;
 }
 
 @layer utilities {

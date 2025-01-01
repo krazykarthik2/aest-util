@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.d-center{
+  @apply flex items-center justify-center;
+}
+
+.prompt {
+  @apply text-xl d-center backdrop-blur-sm bg-[#fff4] before:content-[''] before:bg-[#fff4] before:absolute before:top-full before:left-full before:translate-y-2/4 before:translate-x-2/4 before:block before:w-2 before:h-2 before:rounded-full after:content-[''] after:bg-[#fff4] after:absolute after:top-full after:left-full after:-translate-y-1/2 after:-translate-x-1/2 after:block after:w-5 after:h-5 after:rounded-full rounded-xl px-5 py-2 w-full;
+}

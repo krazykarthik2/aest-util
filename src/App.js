@@ -46,7 +46,14 @@ function App() {
     setRecommend: setRecommend,
   };
   useEffect(() => {
-    setRecommend(command?AllCommands.filter((c) => c.startsWith(command)):[]);
+    setRecommend(
+      command.trim()?
+      AllCommands.filter(
+        (c) => c.startsWith(
+          command.trim()
+        )
+      )
+      :[]);
   }, [command]);
   return (
     <Router>
