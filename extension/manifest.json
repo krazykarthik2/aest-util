@@ -5,6 +5,6 @@
     "description": "Redirects every new tab to a specific website.",
     "permissions": ["tabs"],
     "chrome_url_overrides": {
-      "newtab": "index.html/clock?style=1"
+      "newtab": "index.html"
     }
   }
