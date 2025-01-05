@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Terminal from "../../Terminal/Terminal";
 import { GithubBtn, LoggedinAs, VersionBtn } from "../pins";
-import "./Style12.css";
 
 const Style12 = ({ hours, minutes, props, dispatch }) => {
   const [cmd, setCmd] = useState("");
@@ -42,10 +41,14 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
 
   useEffect(() => {
     if (!stream) {
-      const __stream = new WebSocket("ws://localhost:4594");
-      __stream.onopen = () => {
-        setStream(__stream);
-      };
+      try {
+        const __stream = new WebSocket("ws://localhost:4594");
+        __stream.onopen = () => {
+          setStream(__stream);
+        };
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       stream.onmessage = (event) => {
         const data = JSON.parse(event.data);

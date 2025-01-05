@@ -63,19 +63,10 @@ function App() {
         <Route path="/init" element={<Navigate to="/terminal" />} />
         <Route path="/clock" element={<LandingPage {...terminalProps} />} />
         <Route path="/keyboard" element={<LandingPage {...terminalProps} />} />
+        <Route path="/session" element={<LandingPage {...terminalProps} />} />
+        <Route path="/sessions" element={<LandingPage {...terminalProps} />} />
         <Route path="/timer" element={<LandingPage {...terminalProps} />} />
         <Route path="/terminal" element={<TerminalPage {...terminalProps} />} />
-        <Route path="">
-          <Route path="1" element={<Navigate to={"/clock?style=1"} />} />
-          <Route path="2" element={<Navigate to={"/clock?style=2"} />} />
-          <Route path="3" element={<Navigate to={"/clock?style=3"} />} />
-          <Route path="4" element={<Navigate to={"/clock?style=4"} />} />
-          <Route path="5" element={<Navigate to={"/clock?style=5"} />} />
-          <Route path="6" element={<Navigate to={"/clock?style=6"} />} />
-          <Route path="7" element={<Navigate to={"/clock?style=7"} />} />
-          <Route path="8" element={<Navigate to={"/clock?style=8"} />} />
-          <Route path="9" element={<Navigate to={"/clock?style=9"} />} />
-        </Route>
         <Route path="/help" element={<Help />} />
         <Route path="/typing" element={<TypingPage />} />
         <Route path="/results" element={<TypingResults />} />

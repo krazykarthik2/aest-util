@@ -1,5 +1,5 @@
 import { CiClock2 } from "react-icons/ci";
-import { FaTerminal } from "react-icons/fa";
+import { FaTerminal, FaWindows } from "react-icons/fa";
 import { FaQrcode, FaKeyboard, FaQuestion } from "react-icons/fa6";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { SiGoogleauthenticator } from "react-icons/si";
@@ -10,6 +10,7 @@ export const links = {
   type: <FaKeyboard />,
   keyboard: <FaKeyboard />,
   help: <FaQuestion />,
+  sessions:<FaWindows />,
   login: <FiLogIn />,
   signin: <FiLogIn />,
   logout: <FiLogOut />,
