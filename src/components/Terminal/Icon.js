@@ -12,6 +12,7 @@ import { externalLinks } from "./Icons/externalLinks";
 import { externalSearchLinks } from "./Icons/externalSearchLinks";
 import { links } from "./Icons/links";
 import { utillinks } from "./Icons/utillinks";
+import {  miscCommandsAsync } from "./Icons/miscCommandsAsync";
 const ignoreCommands = ["qr"];
 const switchExecution = {
   style: <LuPaintbrushVertical />,
@@ -24,6 +25,7 @@ const Icon = {
   ...utillinks,
   ...externalLinks,
   ...externalSearchLinks,
+  ...miscCommandsAsync,
   ...asyncUtilCommands,
   ...switchExecution,
 };

@@ -1,11 +1,12 @@
 import { setStyle } from "../../redux/commandSlice";
 import { isExtension } from "../../util/jsutil";
-import { links } from "./commands/links";
+import { asyncUtilCommands } from "./commands/asyncUtilCommands";
 import { extensionOnlyLinks } from "./commands/extensionOnlyLinks";
 import { externalLinks } from "./commands/externalLinks";
 import { externalSearchLinks } from "./commands/externalSearchLinks";
+import { links } from "./commands/links";
+import {  miscCommandsAsync } from "./commands/miscCommandsAsync";
 import { utillinks } from "./commands/utillinks";
-import { asyncUtilCommands } from "./commands/asyncUtilCommands";
 const ignoreCommands = ["qr"];
 
 
@@ -61,7 +62,7 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
   if (action.startsWith("https://")) {
     openNewTab(action + args.join(" "));
   } else {
-    action = action.replaceAll(/[^a-zA-Z0-9.-]+/g, "");
+    action = action.replaceAll(/[^a-zA-Z0-9.@\-]+/g, "");
     action = action.toLowerCase();
 
     if (isExtension()) {
@@ -81,7 +82,11 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
     } else if (action in asyncUtilCommands) {
       const result = await asyncUtilCommands[action](...args);
       return result;
+    } else if (action in miscCommandsAsync) {
+      const result = await miscCommandsAsync[action](...args);
+      return result;
     } else {
+      console.log('===>',action)
       switch (action) {
         case "style":
           args = args.filter((arg) => arg);
@@ -105,13 +110,13 @@ export async function handleCommand(cmd, navigate, dispatch, clearHistory) {
 
   return `command executed:${action}`;
 }
-
 const AllCommands = [
   ...Object.keys(extensionOnlyLinks),
   ...Object.keys(links),
   ...Object.keys(utillinks),
   ...Object.keys(externalLinks),
   ...Object.keys(externalSearchLinks),
+  ...Object.keys(miscCommandsAsync),
   ...Object.keys(asyncUtilCommands),
 ];
 export { AllCommands };
