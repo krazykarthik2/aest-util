@@ -27,8 +27,6 @@ jobs:
       - name: Debug Build Output
         run: |
           ls -la __extension_build__
-          echo ${{ secrets.PAT }}
-          echo ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: Push __extension_build__ to teja_util_extension
