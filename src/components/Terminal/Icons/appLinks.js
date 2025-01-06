@@ -3,7 +3,7 @@ import { FaCamera, FaFolder, FaDiscord, FaPhone } from "react-icons/fa";
 import { FaWhatsapp, FaFigma, FaSpotify } from "react-icons/fa6";
 import { LuNotepadText } from "react-icons/lu";
 import { SiNotion } from "react-icons/si";
-import { VscVscode } from "react-icons/vsc";
+import { VscDebugDisconnect, VscVscode } from "react-icons/vsc";
 
 const actualAppLinks = {
   whatsapp: <FaWhatsapp />,
@@ -18,6 +18,7 @@ const actualAppLinks = {
   windsurf: <VscVscode />,
   discord: <FaDiscord />,
   phonelink: <FaPhone />,
+  daemon:<VscDebugDisconnect/>
 };
 const aliasAppLinks = {
   code: actualAppLinks.vscode,

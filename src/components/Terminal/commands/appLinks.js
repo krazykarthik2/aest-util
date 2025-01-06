@@ -55,6 +55,7 @@ const actualAppLinks = {
   power: (...args) => args.length ? "ms-settings-power://" + processArgsLink(args) : "ms-settings-power://",
   hotspot: (...args) => args.length ? "ms-settings-mobilehotspot://" + processArgsLink(args) : "ms-settings-mobilehotspot://",
   accounts: (...args) => args.length ? "ms-settings-emailandaccounts://" + processArgsLink(args) : "ms-settings-emailandaccounts://",
+  daemon:(...args) => args.length? "teja-util://"+processArgsLink(args):"teja-util://",
 }
 
 const aliasAppLinks = {

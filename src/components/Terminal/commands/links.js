@@ -4,6 +4,7 @@ export const links = {
   state: "/state",
   type: "/typing",
   keyboard: "/keyboard?style=10",
+  session: "/session?style=12",
   sessions: "/sessions?style=13",
   help: "/help",
   login: "/login",
