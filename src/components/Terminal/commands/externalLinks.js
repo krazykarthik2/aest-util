@@ -11,6 +11,7 @@ const actualExternalLinks = {
   netlify: "https://app.netlify.com/",
   vercel: "https://vercel.com/",
   heroku: "https://dashboard.heroku.com/",
+  "daemon.download":"https://github.com/krazykarthik2/electron-ws-cmd/releases/latest/"
 };
 const aliasExternalLinks = {
   chatgpt: actualExternalLinks.gpt,
