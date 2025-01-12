@@ -58,4 +58,7 @@ code {
   .stack{
     @apply flex flex-col;
   }
+  .h-em-1{
+    height: 1em;
+  }
 }

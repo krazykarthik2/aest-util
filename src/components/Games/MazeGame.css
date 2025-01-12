@@ -1,0 +1,88 @@
+/* App.css */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.full-map {
+  
+}
+
+.mini-map {
+  display:flex;
+  flex-direction: column;
+  filter: blur(1px);
+}
+.mini-row{
+  display:flex;
+}
+.cell {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+}
+
+.mini-cell.path,
+.cell.path {
+  background-color: #f39c12; /* Path color */
+}
+.mini-cell{
+  width:4px;
+  height:4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+}
+.mini-cell.wall,
+.cell.wall {
+  background-color: #000; /* Wall color */
+}
+
+.hero {
+  background-color: #00ff00; /* Hero color */
+}
+
+.prize {
+  background-color: #ff00ff; /* Prize color */
+}
+
+.current-map {
+  display:flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+}
+
+.cell.hero {
+  background-color: #c39310;
+}
+
+.cell.prize {
+  background-color: #ff00ff;
+}
+
+.cell.illuminated {
+  background-color: #483b26;
+}
+.mini-cell.illuminated{
+  background-color: #339;
+}
+.mini-cell.hero{
+  background-color: #095f16;
+  box-shadow: 0 0 10px 10px #55715d;
+  z-index:999999999999999999999999999999999;
+}

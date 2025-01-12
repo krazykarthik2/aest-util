@@ -23,14 +23,13 @@ const treatSpace = (str, to_show = true) => {
   return to_show ? str.replaceAll(/\s/g, "_") : str;
 };
 export function alternateDiff(source, change) {
-  
   let list = [];
   let diff_list = [];
   if (change == "") {
     diff_list.push(null);
     list.push([source]);
   } else {
-    let is_same = source[0]==change[0];
+    let is_same = source[0] == change[0];
     diff_list.push(is_same);
     for (let i = 0; i < source.length; i++) {
       if (i >= change.length) {
@@ -66,8 +65,15 @@ export function alternateDiff(source, change) {
 
 window.alternateDiff = alternateDiff;
 
-export const Cursor = ({__ref,className=""}) => {
-  return <div className={"h-7 w-1 bg-[var(--accent-color)] animate-pulse "+className} ref={__ref}></div>;
+export const Cursor = ({ __ref, className = "" }) => {
+  return (
+    <div
+      className={
+        "h-em-1 w-1 bg-[var(--accent-color)] animate-pulse " + className
+      }
+      ref={__ref}
+    ></div>
+  );
 };
 function EachList({ e, i, list_spaced, diff_list }) {
   const CursorRef = React.useRef(null);
@@ -75,37 +81,40 @@ function EachList({ e, i, list_spaced, diff_list }) {
     if (CursorRef.current) {
       CursorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [CursorRef,i,list_spaced]);
+  }, [CursorRef, i, list_spaced]);
   return (
     <>
       {diff_list[i] == null && <Cursor __ref={CursorRef} />}
       {list_spaced[i].map(
         // word:1 word:last has no margin
         (ee, ii) => (
-          <div
-            className={
-              "word mx-2 before-diff-" +
-              (ii == 0) +
-              " after-diff-" +
-              (ii == list_spaced[i].length - 1)
-            }
-            key={ii}
-          >
-            {ee?.split().map((eee, iii) => (
-              <span
-                key={iii}
-                className={
-                  diff_list[i] === null
-                    ? "text-gray-400"
-                    : diff_list[i]
-                    ? "text-green-400"
-                    : "text-red-400"
-                }
-              >
-                {eee}
-              </span>
-            ))}
-          </div>
+          <>
+            <div
+              className={
+                "word before-diff-" +
+                (ii == 0) +
+                " after-diff-" +
+                (ii == list_spaced[i].length - 1)
+              }
+              key={ii}
+            >
+              {ee?.split().map((eee, iii) => (
+                <span
+                  key={iii}
+                  className={
+                    diff_list[i] === null
+                      ? "text-gray-400"
+                      : diff_list[i]
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }
+                >
+                  {eee}
+                  {ii != list_spaced[i].length - 1 && <>&nbsp;</>}
+                </span>
+              ))}
+            </div>
+          </>
         )
       )}
     </>
@@ -117,7 +126,7 @@ function Diff({ source, change }) {
   const list_spaced = list.map((e) => e?.split(" "));
 
   return (
-    <div className="flex flex-wrap gap-0 text-2xl">
+    <div className="flex flex-wrap gap-0 gap-y-5">
       {list.map((e, i) => (
         <EachList
           key={i}
@@ -274,91 +283,90 @@ const TypingPage = () => {
   }, [inputRef]);
 
   return (
-    <div className="typing-page min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-3xl bg-terminal-gray rounded-lg p-6">
-        <div className="flex justify-between mb-4">
-          
-        <div className="space-x-4">
-            {modeOptions.map((e) => (
+    <div className="typing-page min-h-screen w-full flex flex-col items-center justify-center p-8">
+      <div className="w-full rounded-lg p-6">
+        {!isActive && (
+          <div className="flex justify-between mb-4">
+            <div className="space-x-4 text-2xl">
+              {modeOptions.map((e) => (
+                <button
+                  className={`${mode === e ? "text-red-400" : "text-gray-500"}`}
+                  onClick={() => dispatch(setTypingMode(e))}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+
+            {mode == "timeLimit" && (
+              <div className="space-x-4">
+                {timeLimitOptions.map((e) => (
+                  <button
+                    className={`${
+                      timeLimit === e ? "text-red-400" : "text-gray-500"
+                    }`}
+                    onClick={() => dispatch(setTimeLimit(e))}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            )}
+            {mode == "words" && (
+              <div className="space-x-4">
+                {wordOptions.map((e) => (
+                  <button
+                    className={`${
+                      words === e ? "text-red-400" : "text-gray-500"
+                    }`}
+                    onClick={() => dispatch(setWords(e))}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="flex space-x-4">
               <button
-                className={`${mode === e ? "text-red-400" : "text-gray-500"}`}
-                onClick={() => dispatch(setTypingMode(e))}
+                type="button"
+                onClick={() => dispatch(setPunctuation(!punc))}
+                className={punc ? "text-red-400" : "text-gray-500"}
               >
-                {e}
+                !punc
               </button>
-            ))}
+              <button
+                type="button"
+                onClick={() => dispatch(setNumbers(!num))}
+                className={num ? "text-red-400" : "text-gray-500"}
+              >
+                123num
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  dispatch(setCapitalization(nextCapitalizeChoice(capitalize)))
+                }
+                className={"text-red-400 stack d-center"}
+              >
+                <span className="">{capitalize}</span>
+                <span className="text-xs text-gray-500">
+                  {nextCapitalizeChoice(capitalize)}
+                </span>
+              </button>
+            </div>
           </div>
-          
-          {mode == "timeLimit" && (
-            <div className="space-x-4">
-              {timeLimitOptions.map((e) => (
-                <button
-                  className={`${
-                    timeLimit === e ? "text-red-400" : "text-gray-500"
-                  }`}
-                  onClick={() => dispatch(setTimeLimit(e))}
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
-          )}
-          {mode == "words" && (
-            <div className="space-x-4">
-              {wordOptions.map((e) => (
-                <button
-                  className={`${
-                    words === e ? "text-red-400" : "text-gray-500"
-                  }`}
-                  onClick={() => dispatch(setWords(e))}
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
-          )}
-
-
-          {isActive && mode == "timeLimit" && (
-            <div className="d-center timer-cont">
-              <span className="text-red-400">{timeLeft > 0 && timeLeft}</span>
-              <span className="text-gray-500">s</span>
-            </div>
-          )}
-
-          <div className="flex space-x-4">
-            <button
-              type="button"
-              onClick={() => dispatch(setPunctuation(!punc))}
-              className={punc ? "text-red-400" : "text-gray-500"}
-            >
-              !punc
-            </button>
-            <button
-              type="button"
-              onClick={() => dispatch(setNumbers(!num))}
-              className={num ? "text-red-400" : "text-gray-500"}
-            >
-              123num
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                dispatch(setCapitalization(nextCapitalizeChoice(capitalize)))
-              }
-              className={"text-red-400 stack d-center"}
-            >
-              <span className="">{capitalize}</span>
-              <span className="text-xs text-gray-500">
-                {nextCapitalizeChoice(capitalize)}
-              </span>
-            </button>
+        )}
+        {isActive && mode == "timeLimit" && (
+          <div className="d-center timer-cont text-4xl">
+            <span className="text-red-400">{timeLeft > 0 && timeLeft}</span>
+            <span className="text-gray-500">s</span>
           </div>
-        </div>
+        )}
 
         <div className="bg-terminal-black p-6 rounded-lg mb-4">
           <div
-            className="text-terminal-white text-lg max-h-96 overflow-y-auto"
+            className="text-terminal-white text-4xl max-h-96 overflow-y-auto"
             ref={diffScrollerRef}
           >
             <Diff source={text} change={input} />

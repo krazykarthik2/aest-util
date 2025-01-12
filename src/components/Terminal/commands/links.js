@@ -1,8 +1,13 @@
-
+const games = {
+  games:"/games/snake?style=14",
+  "games.snake":"/games/snake?style=14",
+  "games.maze":"/games/maze?style=14"
+}
 export const links = {
   qrimg: "/qrimgutil",
   state: "/state",
   type: "/typing",
+  ...games,
   keyboard: "/keyboard?style=10",
   session: "/session?style=12",
   sessions: "/sessions?style=13",

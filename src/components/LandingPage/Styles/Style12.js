@@ -1,7 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Terminal from "../../Terminal/Terminal";
 import { GithubBtn, LoggedinAs, VersionBtn } from "../pins";
 
+const InputComp = ({ handleSubmit, cmd, setCmd }) => {
+  const inputRef = useRef(null);
+  useEffect(() => {
+    inputRef?.current?.focus();
+  },[inputRef]);
+  return (
+    <form onSubmit={handleSubmit} className="inline-flex w-full">
+      <input
+        type="text"
+        value={cmd}
+        ref={inputRef}
+        onBlur={e=>e?.target?.focus()}
+        className="bg-transparent border-0 outline-0 text-white w-full h-10 px-2 rounded-md"
+        onChange={(e) => setCmd(e.target.value)}
+      />
+    </form>
+  );
+};
 const Style12 = ({ hours, minutes, props, dispatch }) => {
   const [cmd, setCmd] = useState("");
   const [stream, setStream] = useState(null);
@@ -29,9 +47,14 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (cmd) {
-      stream.send(
-        JSON.stringify({ action: "command", sessionId: sessId, command: cmd })
-      );
+      if (cmd == "cls") {
+        setOuts((e) => [e.at(-1)]);
+        setErrs([]);
+      } else {
+        stream.send(
+          JSON.stringify({ action: "command", sessionId: sessId, command: cmd })
+        );
+      }
       setCmd("");
     }
   };
@@ -82,6 +105,7 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
           {[...outs, ...errs]
             .sort((a, b) => a.timestamp - b.timestamp)
             .map((e, i) => (
+              <div className="center w-full">
               <pre
                 key={i}
                 {...(i == outs.length + errs.length - 1
@@ -89,21 +113,22 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
                   : {})}
               >
                 {e.msg}
+                {i == outs.length + errs.length - 1 && (
+                  <InputComp
+                    cmd={cmd}
+                    setCmd={setCmd}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
               </pre>
+              </div>
             ))}
         </div>
       </div>
 
       <div className="bottom w-full justify-between stack items-center gap-2">
         <Terminal {...props} hidden />
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={cmd}
-            className="bg-gray-800 text-white w-full h-10 px-2 rounded-md"
-            onChange={(e) => setCmd(e.target.value)}
-          />
-        </form>
+
         <div className="flex justify-between items-center w-full h-full">
           <div className="left"></div>
           <div className="middle">

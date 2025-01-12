@@ -65,6 +65,7 @@ function App() {
         <Route path="/keyboard" element={<LandingPage {...terminalProps} />} />
         <Route path="/session" element={<LandingPage {...terminalProps} />} />
         <Route path="/sessions" element={<LandingPage {...terminalProps} />} />
+        <Route path="/games/:game" element={<LandingPage {...terminalProps} />} />
         <Route path="/timer" element={<LandingPage {...terminalProps} />} />
         <Route path="/terminal" element={<TerminalPage {...terminalProps} />} />
         <Route path="/help" element={<Help />} />
