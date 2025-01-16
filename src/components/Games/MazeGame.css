@@ -80,6 +80,7 @@
 
 .cell.prize {
   background-color: #ff00ff;
+  opacity: 1 !important;
 }
 
 .mini-cell.illuminated{

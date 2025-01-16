@@ -110,7 +110,8 @@ const addIlluminated = (_ill, heroPos, grid, visionRange) => {
   }
   return illuminated;
 };
-
+const darknessOptions = [1, 1.2, 1.5, 1.7];
+const darknessGuideOptions = ["very-bright", "bright", "normal", "dark"];
 const GridGame = () => {
   const rows = 50; // Huge maze size
   const cols = 50;
@@ -124,7 +125,12 @@ const GridGame = () => {
   const [gameOver, setGameOver] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
   const [timeoutPlayObj, setTimeoutPlayObj] = useState(null);
-
+  const [darkness, setDarkness] = useState(0);
+  function opacityDist(x1, y1, x2, y2) {
+    const sigmoid = (e) => 1 / darknessOptions[darkness] ** e;
+    const dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    return sigmoid(dist);
+  }
   window.prizePos = prizePos;
   useEffect(() => {
     setPrizePos(placePrize(grid));
@@ -274,13 +280,12 @@ const GridGame = () => {
       }
       dfsPath.push({ x, y, type: "backtrack", dir: OPPOSITE[prevDir] });
 
-
       return false;
     };
 
     // Start DFS from the hero's position
     dfs(heroPos.x, heroPos.y);
-    console.log('--->',heroPos.x,heroPos.y)
+    console.log("--->", heroPos.x, heroPos.y);
     console.log(dfsPath);
     let currentStep = 0;
 
@@ -311,11 +316,14 @@ const GridGame = () => {
     }
   }, [heroPos, prizePos, grid]);
 
+  const resetGame = () => {
+    setGrid(generateMaze(rows, cols)); // Regenerate maze on prize reach
+    setIllGrid(generateDark(rows, cols));
+    setHeroPos({ x: 1, y: 1 }); // Reset hero position
+  };
   useEffect(() => {
     if (gameOver) {
-      setGrid(generateMaze(rows, cols)); // Regenerate maze on prize reach
-      setIllGrid(generateDark(rows, cols));
-      setHeroPos({ x: 1, y: 1 }); // Reset hero position
+      resetGame();
     }
   }, [gameOver]);
   // Render the grid and mini map
@@ -343,6 +351,9 @@ const GridGame = () => {
                       } ${
                         prizePos?.x === i && prizePos?.y === j ? "prize" : ""
                       }`}
+                      style={{
+                        opacity: opacityDist(heroPos.x, heroPos.y, i, j),
+                      }}
                     >
                       {heroPos?.x === i && heroPos?.y === j ? "d" : ""}
                       {prizePos?.x === i && prizePos?.y === j ? "💎" : ""}
@@ -351,14 +362,30 @@ const GridGame = () => {
                 </div>
               ))}
             </div>
-            <div className="options">
-              <button
-                className="p-3 rounded-full bg-gray-800"
-                onClick={() => setAutoPlay((e) => !e)}
-              >
-                AUTO:{autoPlay ? "on" : "off"}
+            <div className="options stack d-center">
+              <div className="auto d-center">
+              AUTO:
+                <button
+                  className="px-2 py-1 rounded-full bg-gray-800"
+                  onClick={() => setAutoPlay((e) => !e)}
+                >
+                  {autoPlay ? "on" : "off"}
+                </button>
+              </div>
+              <div className="darkness d-center">
+                Darkness:
+                <button
+                  className="darkness d-center p-2 rounded-full bg-gray-800"
+                  onClick={() =>
+                    setDarkness((e) => (e + 1) % darknessOptions.length)
+                  }
+                >
+                  {darknessGuideOptions[darkness]}
+                </button>
+              </div>
+              <button type="button" accessKey="n" onClick={resetGame}>
+                <u>N</u>ew Game
               </button>
-              heropos {heroPos.x} {heroPos.y}
             </div>
           </div>
         )}
@@ -379,6 +406,15 @@ const GridGame = () => {
                 ))}
               </div>
             ))}
+            <button
+              type="button"
+              accessKey="r"
+              onClick={() => {
+                setGameOver(false);
+              }}
+            >
+              <u>R</u>e-start
+            </button>
           </div>
         )}
       </div>

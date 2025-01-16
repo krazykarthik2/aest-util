@@ -30,8 +30,6 @@ const Snippet = ({ onSubmit }) => {
   useEffect(() => {
     const regex = /[^A-Za-z]/g;
     const val = value?.trim()?.split(" ")?.[0]?.replaceAll(regex, "");
-    window.regex = regex;
-    window.snikeys = SnippetKeys;
     setSugg(SnippetKeys.filter((e) => e.replaceAll(regex, "").startsWith(val)));
     setArgs(
       value
@@ -160,6 +158,7 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
     setErrs([]);
     setCmd("");
     setConnFailed(null);
+    setTerminatedFlag(false)
     if (stream) {
       stream.close();
     } else {
@@ -209,6 +208,10 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
     setCmd(sni);
     inputRef?.current?.focus();
   };
+  const tryOpeningDaemon = () => {
+    window.open("teja-util://");
+    terminateSessionAndNew();
+  };
   return (
     <div className="stack justify-between items-center h-screen py-10 px-5 gap-5">
       <div className="top stack gap-2">
@@ -254,17 +257,16 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
       >
         {connFailed && (
           <div className="err-msg d-center w-full">
-            <Link
-              to="teja-util://"
+            <button
               accessKey="o"
               className="d-center p-3 rounded-lg bg-gray-800 gap-5"
-              onClick={terminateSessionAndNew}
+              onClick={tryOpeningDaemon}
             >
               <span>
                 <u>o</u>pen daemon
               </span>
               <FaArrowUpRightFromSquare />
-            </Link>
+            </button>
           </div>
         )}
         {!connFailed && (
