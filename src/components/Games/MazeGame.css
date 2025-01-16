@@ -26,7 +26,6 @@
 .cell {
   width: 15px;
   height: 15px;
-  border: 1px solid #ddd;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,8 +34,9 @@
 
 .mini-cell.path,
 .cell.path {
-  background-color: #f39c12; /* Path color */
+  background-color: #ffffff; /* Path color */
 }
+
 .mini-cell{
   width:4px;
   height:4px;
@@ -54,7 +54,7 @@
   background-color: #00ff00; /* Hero color */
 }
 
-.prize {
+.mini-cell.prize.illuminated {
   background-color: #ff00ff; /* Prize color */
 }
 
@@ -62,7 +62,14 @@
   display:flex;
   flex-direction: column;
 }
-
+.overview{
+  display:flex;
+  flex-direction: column;
+  .cell{
+    width:7px;
+    height:7px; 
+  }
+}
 .row {
   display: flex;
 }
@@ -75,9 +82,6 @@
   background-color: #ff00ff;
 }
 
-.cell.illuminated {
-  background-color: #483b26;
-}
 .mini-cell.illuminated{
   background-color: #339;
 }

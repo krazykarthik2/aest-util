@@ -11,7 +11,7 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
     <div className="stack justify-between items-center h-screen py-10 px-5 gap-5">
       <div className="top">GAME</div>
 
-      <div className="middle">
+      <div className="middle h-full">
         {params?.game=="snake"&&
         <SnakeGame />}
         {params?.game=="maze"&&

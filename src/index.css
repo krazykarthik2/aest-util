@@ -61,4 +61,7 @@ code {
   .h-em-1{
     height: 1em;
   }
+  kbd{
+    @apply p-1 rounded-lg bg-gray-700 text-white border border-black 
+  }
 }
