@@ -223,7 +223,8 @@ const TypeWriter = () => {
             {move == "word" && (
               <>
                 <div className="w-fit-content flex justify-end">
-                  {BEFORELIMIT<input.length && Array(BEFORETEXTLASTWORD.length).fill(<>&nbsp;</>)}
+                  {BEFORELIMIT < input.length &&
+                    Array(BEFORETEXTLASTWORD.length).fill(<>&nbsp;</>)}
                   <Diff
                     source={BEFORETEXTWITHOUTLASTWORD}
                     change={BEFOREINPUTWITHOUTLASTWORD}
@@ -292,71 +293,75 @@ const Style10 = ({ hours, minutes, props, dispatch }) => {
           <KeyboardMapper />
         </div>
         <div className="bottom stack d-center gap-10 w-full">
-          <div className="terminal d-center w-full">
+          <div className="terminal d-center w-full stack">
+            {terminal && <div className="d-center gap-10"> {props.recommend.map((e,i)=><div className={"item "+(i==0?"mb-3 underline":"")}>{e}</div>)} </div>}
             <Terminal {...props} hidden={!terminal} />
             {!terminal && <TypeWriter />}{" "}
           </div>
-        
+
           <div className="stack d-center">
-          {!terminal &&
-            <div className="d-center settings px-10 py-5 gap-10">
-              <div className="d-center rounded-lg bg-gray-800 px-3 py-1 gap-10">
-                {tapeModeOptions.map((e) => (
-                  <button
-                    key={e}
-                    onClick={() => dispatch(setTapeModeMovePref(e))}
-                    className={move == e ? "text-red-500" : "text-gray-500"}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
-              <div className="d-center rounded-lg bg-gray-800 px-3 py-1 gap-10">
-                {modeOptions.map((e) => (
-                  <button
-                    disabled={e == "timeLimit"}
-                    key={e}
-                    onClick={() => dispatch(setTypingMode(e))}
-                    className={
-                      "disabled:text-black " +
-                      (mode == e ? "text-red-500" : "text-gray-500")
-                    }
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
-              {mode == "words" && (
+            {!terminal && (
+              <div className="d-center settings px-10 py-5 gap-10">
                 <div className="d-center rounded-lg bg-gray-800 px-3 py-1 gap-10">
-                  {wordOptions.map((e) => (
+                  {tapeModeOptions.map((e) => (
+                    <button
+                      key={e}
+                      onClick={() => dispatch(setTapeModeMovePref(e))}
+                      className={move == e ? "text-red-500" : "text-gray-500"}
+                    >
+                      {e}
+                    </button>
+                  ))}
+                </div>
+                <div className="d-center rounded-lg bg-gray-800 px-3 py-1 gap-10">
+                  {modeOptions.map((e) => (
                     <button
                       disabled={e == "timeLimit"}
                       key={e}
-                      onClick={() => dispatch(setWords(e))}
+                      onClick={() => dispatch(setTypingMode(e))}
                       className={
                         "disabled:text-black " +
-                        (words == e ? "text-red-500" : "text-gray-500")
+                        (mode == e ? "text-red-500" : "text-gray-500")
                       }
                     >
                       {e}
                     </button>
                   ))}
                 </div>
-              )}
-            </div>}
+                {mode == "words" && (
+                  <div className="d-center rounded-lg bg-gray-800 px-3 py-1 gap-10">
+                    {wordOptions.map((e) => (
+                      <button
+                        disabled={e == "timeLimit"}
+                        key={e}
+                        onClick={() => dispatch(setWords(e))}
+                        className={
+                          "disabled:text-black " +
+                          (words == e ? "text-red-500" : "text-gray-500")
+                        }
+                      >
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="d-center opts">
               <div className="d-center rounded-lg bg-gray-800 px-3 py-1 gap-10">
                 <button
                   onClick={() => setTerminal(true)}
                   className={terminal ? "text-red-500" : "text-gray-500"}
+                  accessKey="t"
                 >
-                  Terminal
+                  <u>T</u>erminal
                 </button>
                 <button
                   onClick={() => setTerminal(false)}
                   className={!terminal ? "text-red-500" : "text-gray-500"}
+                  accessKey="y"
                 >
-                  Typer
+                  T<u>y</u>per
                 </button>
               </div>
             </div>

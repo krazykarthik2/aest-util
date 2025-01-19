@@ -23,9 +23,7 @@ const Snippets = {
   ...Alias,
 };
 export function format$(str, args) {
-  return str
-    .split(" ")
-    .map((e) =>
+  return str?.split(" ")?.map((e) =>
       e.startsWith("$")
         && Number.isInteger(Number(e.slice(1)))
           && args.length > Number(e.slice(1)) - 1
@@ -37,7 +35,7 @@ export function format$(str, args) {
 export function format$str(str, args) {
   const regex = /\$[0-9]/g
   const dollarAreas = str.match(regex);
-  const argsPlacedArr = dollarAreas.map(e=>Number(e.slice(1))-1).map(e=>args[e])
+  const argsPlacedArr = dollarAreas?.map(e=>Number(e.slice(1))-1)?.map(e=>args[e])
   console.log(argsPlacedArr)
   const result=str.split(regex).map((e,i)=>e+(argsPlacedArr?.[i]||""));
   return result.join('');

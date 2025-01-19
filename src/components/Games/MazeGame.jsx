@@ -120,12 +120,14 @@ const GridGame = () => {
   const [grid, setGrid] = useState(generateMaze(rows, cols));
   const [gridT, setGridT] = useState([]);
   const [heroPos, setHeroPos] = useState({ x: 1, y: 1 });
+  const [gridTheroPos, setGridTheroPos] = useState({ x: 1, y: 1 });
   const [prizePos, setPrizePos] = useState(null);
   const [illGrid, setIllGrid] = useState(generateDark(rows, cols));
   const [gameOver, setGameOver] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
   const [timeoutPlayObj, setTimeoutPlayObj] = useState(null);
   const [darkness, setDarkness] = useState(0);
+  const [isBlur, setIsBlur] = useState(false);
   function opacityDist(x1, y1, x2, y2) {
     const sigmoid = (e) => 1 / darknessOptions[darkness] ** e;
     const dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
@@ -158,6 +160,7 @@ const GridGame = () => {
       }
     }
     setGridT(_grid);
+    setGridTheroPos(heroPos);
   }, [grid, heroPos, visionRange]);
   // Handle hero movement
   const moveHero = (direction) => {
@@ -298,7 +301,7 @@ const GridGame = () => {
 
       const { x, y, type, dir } = dfsPath[currentStep];
       if (type === "explore" || type === "backtrack" || type === "prize") {
-        console.log("out-", moveHero(dir));
+        console.log("out-", setHeroPos({ x: x, y: y }));
       }
       console.log("@step:", currentStep);
       currentStep++;
@@ -328,10 +331,10 @@ const GridGame = () => {
   }, [gameOver]);
   // Render the grid and mini map
   return (
-    <div className="game-container h-full">
-      <div className="map-container h-full">
+    <div className="game-container w-full h-full">
+      <div className="map-container w-full h-full">
         {gameOver || (
-          <div className="stack items-center justify-between h-full">
+          <div className="d-center w-full items-center !justify-between h-full px-10">
             <div className="full-map">
               <MiniMap
                 grid={grid}
@@ -340,20 +343,116 @@ const GridGame = () => {
                 prizePos={prizePos}
               />
             </div>
-            <div className="current-map">
-              {gridT.map((row, rowIndex) => (
-                <div key={rowIndex} className="row">
-                  {row.map(([cell, i, j], colIndex) => (
+            <div className={"current-map " + (isBlur ? "-blur" : "")}>
+              {gridTheroPos &&
+                gridT.map((row, rowIndex) => (
+                  <div key={rowIndex} className="row">
+                    {row.map(([cell, i, j], colIndex) => (
+                      <div
+                        key={colIndex}
+                        className={`cell ${cell === 0 ? "path" : "wall"} ${
+                          gridTheroPos?.x === i && gridTheroPos?.y === j
+                            ? "hero"
+                            : ""
+                        } ${
+                          prizePos?.x === i && prizePos?.y === j ? "prize" : ""
+                        }`}
+                        style={{
+                          opacity: opacityDist(
+                            gridTheroPos.x,
+                            gridTheroPos.y,
+                            i,
+                            j
+                          ),
+                          filter: isBlur
+                            ? `blur(${
+                                6 *
+                                (1 -
+                                  opacityDist(
+                                    gridTheroPos.x,
+                                    gridTheroPos.y,
+                                    i,
+                                    j
+                                  ))
+                              }px)`
+                            : "none",
+                        }}
+                      >
+                        {gridTheroPos?.x === i && gridTheroPos?.y === j
+                          ? "*"
+                          : ""}
+                        {prizePos?.x === i && prizePos?.y === j ? "💎" : ""}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+            </div>
+            <table className="options m-0" align="center">
+              <tr className="auto">
+                <td>
+                  A<u>U</u>TO:
+                </td>
+                <td>
+                  <button
+                    className="px-2 py-1 rounded-full bg-gray-800"
+                    onClick={() => setAutoPlay((e) => !e)}
+                    accessKey="u"
+                  >
+                    {autoPlay ? "on" : "off"}
+                  </button>
+                </td>
+              </tr>
+              <tr className="darkness">
+                <td>
+                  Dar<u>k</u>ness:
+                </td>
+                <td>
+                  <button
+                    className="darkness d-center p-2 rounded-full bg-gray-800"
+                    accessKey="k"
+                    onClick={() =>
+                      setDarkness((e) => (e + 1) % darknessOptions.length)
+                    }
+                  >
+                    {darknessGuideOptions[darkness]}
+                  </button>
+                </td>
+              </tr>
+              <tr className="-blur">
+                <td>
+                  Blu<u>r</u>
+                </td>
+                <td>
+                  <button
+                    className="px-2 py-1 rounded-full bg-gray-800"
+                    accessKey="r"
+                    onClick={() => setIsBlur((e) => !e)}
+                  >
+                    {isBlur ? "on" : "off"}
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={2}>
+                  <button type="button" accessKey="n" onClick={resetGame}>
+                    <u>N</u>ew Game
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        )}
+        {gameOver && (
+          <div className="d-center stack">
+            <div className="overview">
+              {grid.map((row, i) => (
+                <div key={i} className="d-center stack">
+                  {row.map((cell, j) => (
                     <div
-                      key={colIndex}
+                      key={j}
                       className={`cell ${cell === 0 ? "path" : "wall"} ${
-                        heroPos?.x === i && heroPos?.y === j ? "hero" : ""
-                      } ${
                         prizePos?.x === i && prizePos?.y === j ? "prize" : ""
                       }`}
-                      style={{
-                        opacity: opacityDist(heroPos.x, heroPos.y, i, j),
-                      }}
                     >
                       {heroPos?.x === i && heroPos?.y === j ? "d" : ""}
                       {prizePos?.x === i && prizePos?.y === j ? "💎" : ""}
@@ -362,50 +461,6 @@ const GridGame = () => {
                 </div>
               ))}
             </div>
-            <div className="options stack d-center">
-              <div className="auto d-center">
-              AUTO:
-                <button
-                  className="px-2 py-1 rounded-full bg-gray-800"
-                  onClick={() => setAutoPlay((e) => !e)}
-                >
-                  {autoPlay ? "on" : "off"}
-                </button>
-              </div>
-              <div className="darkness d-center">
-                Darkness:
-                <button
-                  className="darkness d-center p-2 rounded-full bg-gray-800"
-                  onClick={() =>
-                    setDarkness((e) => (e + 1) % darknessOptions.length)
-                  }
-                >
-                  {darknessGuideOptions[darkness]}
-                </button>
-              </div>
-              <button type="button" accessKey="n" onClick={resetGame}>
-                <u>N</u>ew Game
-              </button>
-            </div>
-          </div>
-        )}
-        {gameOver && (
-          <div className="overview">
-            {grid.map((row, i) => (
-              <div key={i} className="row">
-                {row.map((cell, j) => (
-                  <div
-                    key={j}
-                    className={`cell ${cell === 0 ? "path" : "wall"} ${
-                      prizePos?.x === i && prizePos?.y === j ? "prize" : ""
-                    }`}
-                  >
-                    {heroPos?.x === i && heroPos?.y === j ? "d" : ""}
-                    {prizePos?.x === i && prizePos?.y === j ? "💎" : ""}
-                  </div>
-                ))}
-              </div>
-            ))}
             <button
               type="button"
               accessKey="r"

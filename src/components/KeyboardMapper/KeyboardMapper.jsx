@@ -155,8 +155,8 @@ function Key({
         typeof __key == "string" ? "" : __key?.expand ? "w-full" : "",
         reactOther ? "scale-[1.05]" : "",
         isActive
-          ? "bg-[#555] scale-[.8]"
-          : `bg-[#222]  transition duration-${delay}`,
+          ? "bg-[#999] scale-[.8]"
+          : `bg-[#111]  transition duration-${delay}`,
       ].join(" ")}
     >
       <div className="d-center gap-1">

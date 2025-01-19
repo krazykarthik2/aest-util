@@ -46,6 +46,7 @@ const HandleURLSearchParams = ({
   }, [URLSearchParams]);
 
   useEffect(() => {
+    if(!command)return;
     if (command.trim().startsWith("qr ")) {
       if (style == 6) return;
       setPreviousStyle(style);
@@ -62,6 +63,7 @@ const HandleURLSearchParams = ({
 
   useEffect(() => {
     if (!previousStyle) return;
+    if(!command)return;
     if (!command.trim().startsWith("qr") && style == 6) {
       dispatch(setStyle(previousStyle));
     }

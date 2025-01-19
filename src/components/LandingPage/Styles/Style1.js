@@ -54,14 +54,14 @@ const Style1 = ({ hours, minutes, props, dispatch }) =>
     <div className="middle justify-between  stack items-center py-5 overflow-hidden w-full">
       <div className="top"></div>
       <div className="middle d-center w-full">
-        {props.recommend.length ||
-        props.command.trim()[0] in IconShort ||
-        (props.command.split(" ").filter((e) => e).length > 1 &&
-          props.command.trim().split(" ")[0] in Icon) ? (
+        {props?.recommend.length ||
+        props?.command?.trim()[0] in IconShort ||
+        (props?.command?.split(" ").filter((e) => e).length > 1 &&
+          props?.command?.trim()?.split(" ")?.[0] in Icon) ? (
           <Recommend
-            value={props.recommend}
-            cmd={props.command.trim().split(" ")[0]}
-            show={props.command.split(" ").filter((e) => e).length == 1}
+            value={props?.recommend}
+            cmd={props?.command?.trim()?.split(" ")?.[0]}
+            show={props?.command?.split(" ")?.filter((e) => e)?.length == 1}
           />
         ) : (
           <div className="text-9xl scale-[1.5] font-bold text-white w-full h-full d-center stack text-3xl">

@@ -17,8 +17,23 @@ const Terminal = ({
   hidden,
   setFocus,
   focus,
+  setIsHidden,
   ...props
 }) => {
+  useEffect(() => {
+    if (hidden) setIsHidden(true);
+    else setIsHidden(false);
+  }, [hidden]);
+  useEffect(() => {
+    const onDocFocus = () => {
+      console.log('doc focus')
+      inputRef?.current?.focus();
+    };
+    window.addEventListener("focus", onDocFocus);
+    return () => {
+      window.removeEventListener("focus", onDocFocus);
+    };
+  }, []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { style, history } = useSelector((state) => state.command);
@@ -81,11 +96,9 @@ const Terminal = ({
       <span className="text-terminal-accent">
         {firstLetter in IconShort
           ? IconShort[firstLetter]
-          : (
-            action in Icon
+          : action in Icon
           ? Icon[action]
-          : renderPrompt()
-          )}
+          : renderPrompt()}
       </span>
     );
   };

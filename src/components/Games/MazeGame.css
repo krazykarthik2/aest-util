@@ -24,8 +24,8 @@
   display:flex;
 }
 .cell {
-  width: 15px;
-  height: 15px;
+  width: 25px;
+  height: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,9 +50,6 @@
   background-color: #000; /* Wall color */
 }
 
-.hero {
-  background-color: #00ff00; /* Hero color */
-}
 
 .mini-cell.prize.illuminated {
   background-color: #ff00ff; /* Prize color */
@@ -64,7 +61,6 @@
 }
 .overview{
   display:flex;
-  flex-direction: column;
   .cell{
     width:7px;
     height:7px; 
@@ -74,6 +70,10 @@
   display: flex;
 }
 
+.-blur .cell.hero{
+  box-shadow: #c39310 0 0 5px 5px;
+  border-radius: 50%;
+}
 .cell.hero {
   background-color: #c39310;
 }

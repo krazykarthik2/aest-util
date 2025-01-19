@@ -61,7 +61,7 @@ const Snippet = ({ onSubmit }) => {
       </div>
       {isFocused && value && (
         <div className="suggestions flex stack items-start text-lg w-full bg-gray-600 rounded-md p-2">
-          {sugg.map((e) => (
+          {sugg?.map((e) => (
             <button
               className="w-full flex items-center gap-2"
               type="button"

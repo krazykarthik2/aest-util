@@ -18,7 +18,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -46,22 +46,21 @@ code {
   @apply fixed top-4 right-4 bg-terminal-gray rounded-lg p-2 shadow-lg flex items-center z-40;
 }
 
-
-.d-center{
+.d-center {
   @apply flex items-center justify-center;
 }
 
 @layer utilities {
-  .d-center{
+  .d-center {
     @apply flex items-center justify-center;
   }
-  .stack{
+  .stack {
     @apply flex flex-col;
   }
-  .h-em-1{
+  .h-em-1 { 
     height: 1em;
   }
-  kbd{
-    @apply p-1 rounded-lg bg-gray-700 text-white border border-black 
+  kbd {
+    @apply p-1 rounded-lg bg-gray-700 text-white border border-black;
   }
 }
