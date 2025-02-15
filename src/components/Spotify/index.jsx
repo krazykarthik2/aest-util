@@ -5,7 +5,7 @@ const SpotifyStyles = [Style1];
 
 const Spotify = ({ style }) => {
   const RequestedStyle = SpotifyStyles[style - 1];
-  const [active, setActive] = useState(true);
+  const [active, setActive] = useState(false);
   useEffect(() => {
     const keydownCheck = (e) => {
       if (e.altKey && (e.key === "s" || e.key == "S")) setActive((e) => !e);
