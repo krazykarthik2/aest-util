@@ -12,7 +12,7 @@ function Help() {
       .then((text) => setData(text));
   });
   return (
-    <div>
+    <div className="h-screen overflow-auto">
       <MdEditor.Markdown source={data} className="!bg-black font-code px-10 py-20"/>
     </div>
   );

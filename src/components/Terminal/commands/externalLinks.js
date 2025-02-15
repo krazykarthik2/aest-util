@@ -2,6 +2,7 @@ const actualExternalLinks = {
   colab: "https://colab.research.google.com/",
   gpt: "https://chatgpt.com/",
   "web.whatsapp": "https://web.whatsapp.com/",
+  "web.figma":"https://www.figma.com/files/teams",
   instagram: "https://www.instagram.com/",
   facebook: "https://www.facebook.com/",
   twitter: "https://twitter.com/",
