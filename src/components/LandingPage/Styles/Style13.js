@@ -1,7 +1,7 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Terminal from "../../Terminal/Terminal";
-import { GithubBtn, LoggedinAs, VersionBtn } from "../pins";
-import axios from "axios";
+import { GithubBtn, LoggedInAs, VersionBtn } from "../pins";
 
 const Style12 = ({ hours, minutes, props, dispatch }) => {
   const [sessions, setSessions] = useState([]);
@@ -48,7 +48,7 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
           </div>
         </div>
         <div className="bottom d-center">
-          <LoggedinAs />
+          <LoggedInAs />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import Terminal from "../../Terminal/Terminal";
-import { Battery, GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
+import { Battery, GithubBtn,LoggedInAs, ShareBtn, VersionBtn } from "../pins";
 
 
 const Style5 =({hours,minutes,props,dispatch}) => (
@@ -16,7 +16,7 @@ const Style5 =({hours,minutes,props,dispatch}) => (
           <Terminal {...props} />
         </div>
         <div className="d-center w-full">
-          <LoggedinAs />
+          <LoggedInAs />
         </div>
       </div>
       <div className="right stack items-end justify-between">

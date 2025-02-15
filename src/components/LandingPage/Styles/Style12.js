@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Terminal from "../../Terminal/Terminal";
-import { GithubBtn, LoggedinAs, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, LoggedinAs, VersionBtn } from "../pins";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaArrowUpFromBracket,
@@ -338,7 +338,7 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
             </div>
           </div>
           <div className="bottom d-center">
-            <LoggedinAs />
+            <LoggedInAs />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTerminal } from "react-icons/fa6";
 import Terminal from "../../Terminal/Terminal";
-import { GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, ShareBtn, VersionBtn } from "../pins";
 import { handleStyleChange } from "../util";
 const Style2 = ({hours,minutes,props,dispatch}) => (
   <div className="flex justify-between items-stretch h-screen">
@@ -29,7 +29,7 @@ const Style2 = ({hours,minutes,props,dispatch}) => (
         </div>
         <div className="github">
           <GithubBtn />
-          <LoggedinAs />
+          <LoggedInAs />
         </div>
       </div>
     </div>

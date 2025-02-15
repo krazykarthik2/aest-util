@@ -1,7 +1,7 @@
 import React from "react";
 import { FaTerminal } from "react-icons/fa6";
 import Terminal from "../../Terminal/Terminal";
-import { Battery4, GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
+import { Battery4, GithubBtn, LoggedInAs,  ShareBtn, VersionBtn } from "../pins";
 import { handleStyleChange } from "../util";
 
 const Style4 =({hours,minutes,props,dispatch}) => (
@@ -32,7 +32,7 @@ const Style4 =({hours,minutes,props,dispatch}) => (
       </div>
       <div className="middle d-center stack gap-5">
         <GithubBtn />
-        <LoggedinAs />
+        <LoggedInAs />
       </div>
       <div className="right d-center">
         <VersionBtn />

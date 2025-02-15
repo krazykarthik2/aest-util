@@ -2,9 +2,10 @@ import React from "react";
 import Icon, { IconShort } from "../../Terminal/Icon";
 import Terminal from "../../Terminal/Terminal";
 import Floating from "../../util/Floating/Floating";
-import { GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, ShareBtn, VersionBtn } from "../pins";
 import "./Style1.css";
 import { useSelector } from "react-redux";
+import Spotify from "../../Spotify";
 const Recommend = ({ value, cmd, show }) => {
   const children = !show
     ? []
@@ -64,9 +65,15 @@ const Style1 = ({ hours, minutes, props, dispatch }) =>
             show={props?.command?.split(" ")?.filter((e) => e)?.length == 1}
           />
         ) : (
-          <div className="text-9xl scale-[1.5] font-bold text-white w-full h-full d-center stack text-3xl">
+          <div className="w-full h-full d-center">
+            <div className="left w-full "></div>
+          <div className=" w-full text-9xl scale-[1.5] font-bold text-white h-full d-center stack text-3xl">
             <div className="hours">{hours}</div>
             <div className="minutes">{minutes}</div>
+          </div>
+            <div className="right w-full ">
+              <Spotify style={1} />
+            </div>
           </div>
         )}  
       </div>
@@ -78,7 +85,7 @@ const Style1 = ({ hours, minutes, props, dispatch }) =>
         </div>
         <div className="github">
           <GithubBtn />
-          <LoggedinAs />
+          <LoggedInAs />
         </div>
       </div>
     </div>

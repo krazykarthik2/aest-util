@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Terminal from "../../Terminal/Terminal";
-import { GithubBtn, LoggedinAs, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, VersionBtn } from "../pins";
 import SnakeGame from "../../Games/SnakeGame";
 import { useParams } from "react-router-dom";
 import MazeGame from "../../Games/MazeGame";
@@ -31,7 +31,7 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
           </div>
         </div>
         <div className="bottom d-center">
-          <LoggedinAs />
+          <LoggedInAs />
         </div>
       </div>
     </div>

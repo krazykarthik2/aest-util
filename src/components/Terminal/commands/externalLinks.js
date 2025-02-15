@@ -22,7 +22,7 @@ const aliasExternalLinks = {
   openai: actualExternalLinks.gpt,
   passwords: actualExternalLinks["chrome.passwords"],
   ig: actualExternalLinks.instagram,
-  ig.reels:actualExternalLinks["instagram.reels"],
+  "ig.reels":actualExternalLinks["instagram.reels"],
   fb: actualExternalLinks.facebook,
 };
 export const externalLinks = {

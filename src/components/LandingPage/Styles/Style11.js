@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Terminal from "../../Terminal/Terminal";
-import { GithubBtn, LoggedinAs, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, VersionBtn } from "../pins";
 import "./Style11.css";
 const Balls = ({ value, total }) => {
   const balls = [];
@@ -111,7 +111,7 @@ const Style11 = ({ hours, minutes, props, dispatch }) => {
           </div>
         </div>
         <div className="bottom d-center">
-          <LoggedinAs />
+          <LoggedInAs />
         </div>
         <div className="astable">
           {timeLeft > 0 && (

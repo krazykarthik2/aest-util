@@ -17,7 +17,7 @@ import KeyboardMapper from "../../KeyboardMapper/KeyboardMapper";
 import Terminal from "../../Terminal/Terminal";
 import { alternateDiff, Cursor } from "../../TypingPage/TypingPage";
 import { getFormattedText, withoutLast } from "../../TypingPage/util";
-import { GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, ShareBtn, VersionBtn } from "../pins";
 import "./Style10.css";
 function Diff({
   source,
@@ -368,7 +368,7 @@ const Style10 = ({ hours, minutes, props, dispatch }) => {
           </div>
           <div className="github">
             {keyboardLayoutPreference == "all" || <GithubBtn />}
-            <LoggedinAs />
+            <LoggedInAs />
           </div>
         </div>
       </div>

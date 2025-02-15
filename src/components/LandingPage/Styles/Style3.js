@@ -1,6 +1,6 @@
 import React from "react";
 import Terminal from "../../Terminal/Terminal";
-import { GithubBtn, LoggedinAs, ShareBtn, VersionBtn } from "../pins";
+import { GithubBtn, LoggedInAs, dInAs, ShareBtn, VersionBtn } from "../pins";
 
 const Style3 = ({ hours, minutes, props, dispatch }) => (
   <div className="flex justify-between items-stretch h-screen">
@@ -44,7 +44,7 @@ const Style3 = ({ hours, minutes, props, dispatch }) => (
         </div>
           <Terminal {...props} />
       </div>
-      <LoggedinAs />
+      <LoggedInAs />
     </div>
   </div>
 );

@@ -13,7 +13,7 @@ export const GithubBtn = () => (
     <span className="d-center vertical text-xl font-bold">/krazykarthik2</span>
   </a>
 );
-export const LoggedinAs = () => {
+export const LoggedInAs = () => {
   const user = useSelector((state) => state.auth.user);
   return user ? (
     <div className="d-center gap-2 text-sm w-full">
