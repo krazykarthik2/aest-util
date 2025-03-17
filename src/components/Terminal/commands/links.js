@@ -11,7 +11,7 @@ export const links = {
   keyboard: "/keyboard?style=10",
   session: "/session?style=12",
   sessions: "/sessions?style=13",
-  auto: "/auto?style=10",
+  auto: "/auto?style=15",
   help: "/help",
   login: "/login",
   signin: "/login",

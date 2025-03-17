@@ -26,6 +26,7 @@ import Help from "./components/Help/Help";
 import { AllCommands } from "./components/Terminal/logic";
 import TerminalPage from "./components/TerminalPage/TerminalPage";
 import HandleKeyPress from "./components/util/HandleKeyPress";
+import AutoResults from "./components/AutoResults/AutoResults";
 const emptyFunc = () => {};
 function App() {
   const dispatch = useDispatch();
@@ -80,7 +81,10 @@ function App() {
         <Route path="/keyboard" element={<LandingPage {...terminalProps} />} />
         <Route path="/session" element={<LandingPage {...terminalProps} />} />
         <Route path="/sessions" element={<LandingPage {...terminalProps} />} />
-        <Route path="/auto" element={<LandingPage {...terminalProps} />} />
+        <Route path="/auto">
+          <Route path="" element={<LandingPage {...terminalProps} />} />
+          <Route path="results" element={<AutoResults/>} />
+        </Route>
         <Route
           path="/games/:game"
           element={<LandingPage {...terminalProps} />}

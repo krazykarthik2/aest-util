@@ -13,6 +13,7 @@ const HandleKeyPress = ({ focus, onTab }) => {
       }
       if (e.altKey) {
         if (e.key === "x") navigate("/session?style=12");
+        if (e.key === "a") navigate("/auto?style=15");
         else if (Number.isInteger(parseInt(e.key))) {
           if ([1, 2, 3, 4, 5, 7, 8].includes(parseInt(e.key)))
             // 6 for qr code only
