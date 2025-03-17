@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   FaArrowRight,
   FaBug,
   FaInfoCircle,
+  FaPlay,
   FaPlusCircle,
   FaServer,
+  FaStop,
   FaStopCircle,
   FaUserAlt,
 } from "react-icons/fa";
+import { splitText } from "../../util/jsutil";
+
 function Alert({ by, content }) {
   return (
     <div
@@ -25,6 +29,8 @@ const Icon = {
   "batch-output": <FaArrowRight size={30} />,
   "batch-error": <FaBug size={30} />,
   "batch-executed": <FaStopCircle size={30} />,
+  "line-started": <FaPlay size={30} />,
+  "line-executed": <FaStop size={30} />,
 };
 function Server({ by, content }) {
   const IconReq = Icon[content.action] || <></>;
@@ -40,8 +46,13 @@ function Server({ by, content }) {
 
       <div className="flex-col">
         <div className="flex justify-between">
-          <p>{content.action}</p>
-          <p>#{content.sessionId}</p>
+          <span>{content.action}</span>
+          <div className="stack text-gray-600 text-xs">
+            #
+            {splitText(content?.sessionId, 9).map((e, i) => (
+              <span key={i}>{e}</span>
+            ))}
+          </div>
         </div>
         <p>{content.output}</p>
 
@@ -61,6 +72,7 @@ function You({ by, content }) {
     </div>
   );
 }
+
 function AlertSub({ by, sub, lineId }) {
   return (
     <div
@@ -73,27 +85,6 @@ function AlertSub({ by, sub, lineId }) {
     </div>
   );
 }
-function ServerUnit({by,content}){
-  return (
-    <div className="flex">
-      <div className="stack w-full">
-        <div className="flex justify-between">
-          <span>
-            {content.action}
-            </span>
-            <span>#{content.sessionId}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>
-            {content.output}
-            </span>
-            <span>@{content.lineId}</span>
-        </div>
-        {/* {JSON.stringify(content)} */}
-      </div>
-    </div>
-  )
-}
 function ServerSub({ by, sub, lineId }) {
   return (
     <div
@@ -102,7 +93,16 @@ function ServerSub({ by, sub, lineId }) {
     >
       <FaServer size={30} />
       <p>{lineId}</p>
-      <div className="stack">{sub.map((e) => <div>{<ServerUnit {...e} />}</div>).map((e,i)=><>{e}{i==sub.length-1||<Connector/>}</>)}</div>
+      <div className="stack">
+        {sub
+          .map((e, i) => <div key={i}>{<ServerUnit {...e} />}</div>)
+          .map((e, i) => (
+            <React.Fragment key={i}>
+              {e}
+              {i == sub.length - 1 || <Connector />}
+            </React.Fragment>
+          ))}
+      </div>
     </div>
   );
 }
@@ -118,6 +118,30 @@ function YouSub({ by, sub, lineId }) {
     </div>
   );
 }
+
+function ServerUnit({ by, content }) {
+  const IconReq = Icon[content?.action] || <></>;
+  return (
+    <div className="flex">
+      <div className="flex items-center">{IconReq}</div>
+      <div className="stack w-full">
+        <div className="flex justify-between">
+          <span>{content?.action}</span>{" "}
+          <div className="stack text-gray-600 text-xs">
+            {splitText(content?.sessionId, 9).map((e, i) => (
+              <span key={i}>{e}</span>
+            ))}
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <span>{content?.output}</span>
+        </div>
+        {/* {JSON.stringify(content)} */}
+      </div>
+    </div>
+  );
+}
+
 function Msg({ by, content, sub = false }) {
   return (
     <div className="w-full d-center">
@@ -151,11 +175,13 @@ function Msg({ by, content, sub = false }) {
     </div>
   );
 }
+
 function Connector() {
   return <div className="w-full d-center">|</div>;
 }
-function processState(__state) {
-  let state= [...__state];
+
+function makeLineIdGroups(__state) {
+  let state = [...__state];
   let newState = [];
   for (let i = 0; i < state.length; i++) {
     // group all things consecutively having same lineId if they are of state.by in ["line-started","batch-output","batch-error","line-executed"]
@@ -180,35 +206,48 @@ function processState(__state) {
       ) {
         j++;
       }
-      let group = state.splice(i, j - i - 1);
+
+      let group = state.splice(i, j - i);
       let newgroup = {};
       newgroup.by = "server";
       newgroup.content = { lineId: lineId };
-      newgroup.sub = [];
+      let groupedCommandSubs = [];
+
       for (let k = 0; k < group.length; k++) {
-        newgroup.sub.push(group[k]);
+        
+        groupedCommandSubs.push(group[k]);
       }
+      newgroup.sub = groupedCommandSubs;
       newState.push(newgroup);
-    } else {
-      newState.push(state[i]);
     }
+    newState.push(state[i]);
   }
   return newState;
 }
+
 function AutoResults() {
   const location = useLocation();
-  const state = location.state;
-  window.state = state;
+  const [processedState, setProcessedState] = useState([]);
+  useEffect(() => {
+    if (location.state) {
+      window.state = location.state;
+
+      let prx1 = makeLineIdGroups(location.state);
+
+      window.prx1 = prx1;
+      setProcessedState(prx1);
+    }
+  }, [location.state]);
   return (
     <div className="overflow-y-scroll h-screen">
       <h1>Result of Automata</h1>
       <div className="stack">
-        {processState(state)
+        {processedState
           .map((msg) => Msg(msg))
           .map((msg, i) => (
             <>
               {msg}
-              {i != state.length - 1 && <Connector />}
+              {i != processedState.length - 1 && <Connector />}
             </>
           ))}
       </div>
