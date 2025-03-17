@@ -8,7 +8,6 @@ const HandleKeyPress = ({ focus, onTab }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     const callBack = (e) => {
-      console.log(e)
       if (e.key === "Escape") {
         navigate("/terminal");
       }

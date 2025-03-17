@@ -50,6 +50,21 @@ export const getFormattedText = (select, capitalize, punc, num) => {
   }
   return select;
 };
+export const getTimeDiff = (oldTime, newTime) => {
+  let diff = new Date(newTime) - new Date(oldTime);
+  let seconds = Math.floor(diff / 1000);
+  let minutes = Math.floor(seconds / 60);
+  let hours = Math.floor(minutes / 60);
+  let days = Math.floor(hours / 24);
+  return { seconds, minutes, hours, days };
+} 
+export const getTimeDiffStr = (oldTime, newTime) => {
+  let { seconds, minutes, hours, days } = getTimeDiff(oldTime, newTime);
+  if (days > 0) return `${days} days ago`;
+  if (hours > 0) return `${hours} hours ago`;
+  if (minutes > 0) return `${minutes} minutes ago`;
+  return `${seconds} seconds ago`;
+}
 export const withoutLast =( arr)=>{
   let x = arr?.slice(0, arr.length - 1);
   return x

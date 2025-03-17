@@ -9,6 +9,7 @@ export const links = {
   state: null,
   type: <FaKeyboard />,
   keyboard: <FaKeyboard />,
+  auto:<faGears/>,
   help: <FaQuestion />,
   sessions:<FaWindows />,
   login: <FiLogIn />,
