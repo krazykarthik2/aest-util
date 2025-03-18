@@ -1,257 +1,105 @@
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  FaArrowRight,
-  FaBug,
-  FaInfoCircle,
-  FaPlay,
-  FaPlusCircle,
-  FaServer,
-  FaStop,
-  FaStopCircle,
-  FaUserAlt,
-} from "react-icons/fa";
-import { splitText } from "../../util/jsutil";
+import FloatingDock from "../util/Aceternity/FloatingDock";
+import Pointer from "../util/Aceternity/Pointer";
+import DotBg from "./../util/Aceternity/DotBg";
+import { makeLineIdGroups } from "./processutil";
+import Alert, { AlertSub } from "./UI/Alerts";
+import Connector from "./UI/Connector";
+import Server, { ServerSub } from "./UI/Server";
+import You, { YouSub } from "./UI/You";
+import { FaArrowDown, FaHome, FaMinus, FaPlus } from "react-icons/fa";
 
-function Alert({ by, content }) {
+function Msg({ by, content, sub = false, isMinimized }) {
   return (
-    <div
-      className="inline-flex rounded-xl gap-5 items-center bg-blue-500 text-white text-sm font-bold px-4 py-3"
-      role="alert"
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: false, amount: 0.3 }}
+      className={`w-full d-center`}
     >
-      <FaInfoCircle size={30} />
-      <p>{JSON.stringify(content)}</p>
-    </div>
+      {by === "alert" ? (
+        sub ? <AlertSub isMinimized={isMinimized} by={by} sub={sub} lineId={content.lineId} /> : <Alert by={by} content={content} />
+      ) : null}
+      {by === "server" ? (
+        sub ? <ServerSub isMinimized={isMinimized} by={by} sub={sub} lineId={content.lineId} /> : <Server by={by} content={content} />
+      ) : null}
+      {by === "you" ? (
+        sub ? <YouSub isMinimized={isMinimized} by={by} sub={sub} lineId={content.lineId} /> : <You by={by} content={content} />
+      ) : null}
+    </motion.div>
   );
 }
-const Icon = {
-  "batch-created": <FaPlusCircle size={30} />,
-  "batch-output": <FaArrowRight size={30} />,
-  "batch-error": <FaBug size={30} />,
-  "batch-executed": <FaStopCircle size={30} />,
-  "line-started": <FaPlay size={30} />,
-  "line-executed": <FaStop size={30} />,
-};
-function Server({ by, content }) {
-  const IconReq = Icon[content.action] || <></>;
-  return (
-    <div
-      className={`inline-flex rounded-xl gap-5 items-center text-white text-sm font-bold px-4 py-3 ${
-        content.action == "batch-error" ? "bg-red-500" : "bg-green-500"
-      } `}
-      role="alert"
-    >
-      <FaServer size={30} />
-      {IconReq}
-
-      <div className="flex-col">
-        <div className="flex justify-between">
-          <span>{content.action}</span>
-          <div className="stack text-gray-600 text-xs">
-            #
-            {splitText(content?.sessionId, 9).map((e, i) => (
-              <span key={i}>{e}</span>
-            ))}
-          </div>
-        </div>
-        <p>{content.output}</p>
-
-        <p>{JSON.stringify(content)}</p>
-      </div>
-    </div>
-  );
-}
-function You({ by, content }) {
-  return (
-    <div
-      className="inline-flex rounded-xl gap-5 items-center bg-blue-500 text-white text-sm font-bold px-4 py-3"
-      role="alert"
-    >
-      <FaUserAlt size={30} />
-      <p>{JSON.stringify(content)}</p>
-    </div>
-  );
-}
-
-function AlertSub({ by, sub, lineId }) {
-  return (
-    <div
-      className="inline-flex rounded-xl gap-5 items-center bg-blue-500 text-white text-sm font-bold px-4 py-3"
-      role="alert"
-    >
-      <FaInfoCircle size={30} />
-      <p>{lineId}</p>
-      <div className="stack">{sub.map((e) => JSON.stringify(e))}</div>
-    </div>
-  );
-}
-function ServerSub({ by, sub, lineId }) {
-  return (
-    <div
-      className="inline-flex rounded-xl gap-5 items-center bg-green-500 text-white text-sm font-bold px-4 py-3"
-      role="alert"
-    >
-      <FaServer size={30} />
-      <p>{lineId}</p>
-      <div className="stack">
-        {sub
-          .map((e, i) => <div key={i}>{<ServerUnit {...e} />}</div>)
-          .map((e, i) => (
-            <React.Fragment key={i}>
-              {e}
-              {i == sub.length - 1 || <Connector />}
-            </React.Fragment>
-          ))}
-      </div>
-    </div>
-  );
-}
-function YouSub({ by, sub, lineId }) {
-  return (
-    <div
-      className="inline-flex rounded-xl gap-5 items-center bg-blue-500 text-white text-sm font-bold px-4 py-3"
-      role="alert"
-    >
-      <FaInfoCircle size={30} />
-      <p>{lineId}</p>
-      <div className="stack">{sub.map((e) => JSON.stringify(e))}</div>
-    </div>
-  );
-}
-
-function ServerUnit({ by, content }) {
-  const IconReq = Icon[content?.action] || <></>;
-  return (
-    <div className="flex">
-      <div className="flex items-center">{IconReq}</div>
-      <div className="stack w-full">
-        <div className="flex justify-between">
-          <span>{content?.action}</span>{" "}
-          <div className="stack text-gray-600 text-xs">
-            {splitText(content?.sessionId, 9).map((e, i) => (
-              <span key={i}>{e}</span>
-            ))}
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <span>{content?.output}</span>
-        </div>
-        {/* {JSON.stringify(content)} */}
-      </div>
-    </div>
-  );
-}
-
-function Msg({ by, content, sub = false }) {
-  return (
-    <div className="w-full d-center">
-      {by == "alert" ? (
-        sub ? (
-          <AlertSub by={by} sub={sub} lineId={content.lineId} />
-        ) : (
-          <Alert by={by} content={content} />
-        )
-      ) : (
-        <></>
-      )}
-      {by == "server" ? (
-        sub ? (
-          <ServerSub by={by} sub={sub} lineId={content.lineId} />
-        ) : (
-          <Server by={by} content={content} />
-        )
-      ) : (
-        <></>
-      )}
-      {by == "you" ? (
-        sub ? (
-          <YouSub by={by} sub={sub} lineId={content.lineId} />
-        ) : (
-          <You by={by} content={content} />
-        )
-      ) : (
-        <></>
-      )}
-    </div>
-  );
-}
-
-function Connector() {
-  return <div className="w-full d-center">|</div>;
-}
-
-function makeLineIdGroups(__state) {
-  let state = [...__state];
-  let newState = [];
-  for (let i = 0; i < state.length; i++) {
-    // group all things consecutively having same lineId if they are of state.by in ["line-started","batch-output","batch-error","line-executed"]
-    if (
-      state[i].by == "server" &&
-      ["line-started", "batch-output", "batch-error", "line-executed"].includes(
-        state[i].content.action
-      )
-    ) {
-      let lineId = state[i].content.lineId;
-      let j = i + 1;
-      while (
-        j < state.length &&
-        state[j].by == "server" &&
-        state[j].content.lineId == lineId &&
-        [
-          "line-started",
-          "batch-output",
-          "batch-error",
-          "line-executed",
-        ].includes(state[j].content.action)
-      ) {
-        j++;
-      }
-
-      let group = state.splice(i, j - i);
-      let newgroup = {};
-      newgroup.by = "server";
-      newgroup.content = { lineId: lineId };
-      let groupedCommandSubs = [];
-
-      for (let k = 0; k < group.length; k++) {
-        
-        groupedCommandSubs.push(group[k]);
-      }
-      newgroup.sub = groupedCommandSubs;
-      newState.push(newgroup);
-    }
-    newState.push(state[i]);
-  }
-  return newState;
-}
-
 function AutoResults() {
   const location = useLocation();
   const [processedState, setProcessedState] = useState([]);
   useEffect(() => {
     if (location.state) {
-      window.state = location.state;
-
       let prx1 = makeLineIdGroups(location.state);
-
-      window.prx1 = prx1;
       setProcessedState(prx1);
+      
     }
   }, [location.state]);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  function minimizeAll() {
+    setIsMinimized(true);
+    console.log('exec');
+  }
+  
+  function maximizeAll() {
+    setIsMinimized(false);
+    console.log('exec');
+  }
+  
+
+  const dockItems= [
+    {
+      title:<><u>M</u>inimize</>,
+      icon:<FaMinus size={30}/>,
+      onClick:minimizeAll,
+      accessKey:"m"
+    },{
+      title:<>Max<u>i</u>mize</>,
+      icon:<FaPlus size={30}/>,
+      onClick:maximizeAll,
+      accessKey:"i"
+    }
+  ] 
+
   return (
-    <div className="overflow-y-scroll h-screen">
-      <h1>Result of Automata</h1>
-      <div className="stack">
-        {processedState
-          .map((msg) => Msg(msg))
-          .map((msg, i) => (
-            <>
-              {msg}
-              {i != processedState.length - 1 && <Connector />}
-            </>
-          ))}
+    <Pointer >
+    <motion.div
+      initial={{ y: 50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+      className="overflow-y-scroll h-screen gap-7 stack py-10 flex flex-col items-center"
+    >
+      <DotBg/>
+      <h1 className="d-center text-2xl">AUTOMATA WORKFLOW LOG ANALYSIS</h1>
+      
+      <div className="stack relative">
+        {processedState.map((msg, i) => (
+          <React.Fragment key={i}>
+            <Msg {...msg} index={i} isMinimized={isMinimized}/>
+            {i !== processedState.length - 1 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                viewport={{ once: false, amount: 0.3 }}
+              >
+                <Connector index={i} />
+              </motion.div>
+            )}
+          </React.Fragment>
+        ))}
       </div>
-    </div>
+      <FloatingDock items={dockItems} comeOutOnLeft={false}/>
+    </motion.div>
+    </Pointer>
   );
 }
 
