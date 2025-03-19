@@ -7,8 +7,10 @@ export default function TextGen({
   duration = 0.5,
 }) {
   const [scope, animate] = useAnimate();
-  let wordsArray = words.split(" ");
+  let wordsArray = words?.split(" ");
   useEffect(() => {
+    if(!scope.current)return;
+    if(!wordsArray || !wordsArray.length)return;
     animate(
       "span",
       {
@@ -25,7 +27,7 @@ export default function TextGen({
   const renderWords = () => {
     return (
       <motion.div ref={scope}>
-        {wordsArray.map((word, idx) => {
+        {wordsArray?.map((word, idx) => {
           return (
             <motion.span
               key={word + idx}

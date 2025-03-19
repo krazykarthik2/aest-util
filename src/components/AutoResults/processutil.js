@@ -1,6 +1,8 @@
 import { FaArrowDown, FaArrowRight, FaBug, FaHome, FaPlay, FaPlusCircle, FaStop, FaStopCircle } from "react-icons/fa";
 
+//TODO: fix error with multiple works
 export function makeLineIdGroups(__state) {
+  console.log(__state)
   let state = [...__state];
   let newState = [];
   for (let i = 0; i < state.length; i++) {

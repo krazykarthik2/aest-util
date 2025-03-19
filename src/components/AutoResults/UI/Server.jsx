@@ -59,50 +59,27 @@ export function ServerUnit({ by, content }) {
     </div>
   );
 }
-
-export function ServerSub({ by, sub, lineId,isMinimized }) {
-  const [expanded, setExpanded] = React.useState(false);
-  useEffect(()=>{ 
-    if(isMinimized){
-      setExpanded(false)
-    }else{ 
-      setExpanded(true) 
-    }
-  },[isMinimized])
+export function ServerSub({ by, sub, lineId, onExpand, isExpanded,onCollapse }) {
   return (
     <div
-      className="inline-flex rounded-xl gap-5 items-center bg-green-500 text-white text-sm font-bold px-4 py-3"
+      className={`inline-flex rounded-xl gap-5 items-center bg-green-500 text-white text-sm font-bold px-4 py-3 ${isExpanded?"animate-pulse":""} `}
       role="alert"
     >
-      <button className="expand text-3xl" onClick={() => setExpanded((e) => !e)}>
-        {expanded ? "-" : "+"}
+      <button
+        className="expand text-3xl"
+        onClick={() => {if(!isExpanded)onExpand(sub);else onCollapse();}}
+        aria-label={isExpanded ? "Collapse" : "Expand"}
+      >
+        {isExpanded ? "-" : "+"}
       </button>
       <FaServer size={30} />
       <p>{lineId}</p>
-
-      {expanded && (
-        <div className="stack">
-          {sub
-            .map((e, i) => (
-              <div key={i}>
-                {e.content.action == "grouped-command" ? (
-                  <ServerGroupedCommand {...e} />
-                ) : (
-                  <ServerUnit {...e} />
-                )}
-              </div>
-            ))
-            .map((e, i) => (
-              <React.Fragment key={i}>
-                {e}
-                {i == sub.length - 1 || <Connector />}
-              </React.Fragment>
-            ))}
-        </div>
-      )}
     </div>
   );
 }
+
+
+
 export default function Server({ by, content }) {
   const IconReq = Icon[content.action] || <></>;
   return (
@@ -114,7 +91,7 @@ export default function Server({ by, content }) {
     >
       <FaServer size={30} />
       {IconReq}
-
+      {typeof(content)=="string" ? content:
       <div className="flex justify-between gap-5">
         <div className="stack text-gray-600 text-xs">
           {splitText(content?.batchId, 9).map((e, i) => (
@@ -126,6 +103,7 @@ export default function Server({ by, content }) {
           <TextGen words={content.output} />
         </div>
       </div>
+      }
     </div>
   );
 }

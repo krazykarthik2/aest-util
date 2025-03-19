@@ -3,6 +3,25 @@ import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import rehypeRaw from "rehype-raw";
 import Terminal from "../../Terminal/Terminal";
+import yaml from "js-yaml";
+
+function yamlToJson(yamlInput) {
+  const parsedYaml = yaml.load(yamlInput);
+
+  const jsonOutput =  {
+      command: {
+        exec: parsedYaml.map((item) => ({
+          name: item.name,
+          command: Array.isArray(item.command) ? item.command.join(" && ") : item.command,
+        })),
+      },
+      action: "batch-commands",
+    }
+  
+
+  return jsonOutput;
+}
+
 
 export default function Style15({ hours, minutes, props, dispatch }) {
   const [messages, setMessages] = useState([]);
@@ -78,14 +97,7 @@ export default function Style15({ hours, minutes, props, dispatch }) {
     if (ws) {
       console.log(input.trim());
       if (input.trim()) {
-        const json = {
-          command: {
-            exec: input
-              ?.split("\n")
-              ?.map((e) => ({ name: "work1", command: e })),
-          },
-          action: "batch-commands",
-        };
+        const json = yamlToJson(input.trim());
         console.log(json);
         ws.send(JSON.stringify(json));
         setMessages((prev) => [...prev, { by: "you", content: "input" }]);

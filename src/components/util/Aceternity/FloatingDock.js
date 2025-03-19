@@ -15,7 +15,7 @@ import {
 
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+      
 export default function FloatingDock({
   items,
   desktopClassName,
@@ -37,6 +37,20 @@ export default function FloatingDock({
     </>
   );
 }
+/**
+ * A navigation menu that comes out from the bottom of the screen when
+ * the user presses the button on mobile devices.
+ *
+ * @param {React.ReactNode[]} items - An array of items to display in the dock.
+ * @param {string} [className] - The class name to apply to the dock.
+ *
+ * @example
+ * <FloatingDockMobile
+ *   items={[
+ *     
+ *   ]}
+ * />
+ */
 const FloatingDockMobile = ({ items, className }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -97,6 +111,19 @@ const FloatingDockMobile = ({ items, className }) => {
     </div>
   );
 };
+
+/**
+ * FloatingDockDesktop is a React component that renders a floating dock UI element.
+ * It displays a vertical list of icons on the left or right side of the screen,
+ * based on the `comeOutOnLeft` prop. The dock is positioned at the center of the viewport
+ * and allows interaction with the icons, which can be links or buttons.
+ *
+ * @param {Object[]} items - An array of objects representing the items to be displayed in the dock.
+ * Each item should contain properties like `icon`, `href`, and `onClick`.
+ * @param {string} className - Additional CSS classes to be applied to the dock container.
+ * @param {boolean} [comeOutOnLeft=false] - A boolean to determine if the dock should be displayed on the left side.
+ */
+
 const FloatingDockDesktop = ({ items, className, comeOutOnLeft = false }) => {
   let mouseY = useMotionValue(Infinity);
   return (
@@ -121,6 +148,28 @@ const FloatingDockDesktop = ({ items, className, comeOutOnLeft = false }) => {
   );
 };
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * IconContainer is a component that renders an interactive icon with animation
+ * effects based on the user's mouse position. The icon can either act as a link
+ * or a button, and displays a tooltip when hovered.
+ *
+ * @param {object} props - Props object for the component.
+ * @param {MotionValue} props.mouseY - A Framer Motion value representing the Y
+ *   position of the user's mouse, used to calculate the distance for animation.
+ * @param {string} props.title - The title or tooltip text to display on hover.
+ * @param {JSX.Element} props.icon - The icon to render inside the container,
+ *   which can be either a link or a button.
+ * @param {string} [props.href] - The URL to navigate to if the icon is a link.
+ * @param {function} [props.onClick] - The callback function to execute when the
+ *   icon is clicked if it acts as a button.
+ * @param {boolean} [props.comeOutOnLeft=false] - Determines the direction from
+ *   which the tooltip appears; true for left, false for right.
+ * @param {string} [props.accessKey] - The access key to activate the link or
+ *   button.
+ */
+
+/******  095bcf66-5f09-4548-b0a8-da204d829ec9  *******/
 function IconContainer({ mouseY, title, icon, href,onClick, comeOutOnLeft ,accessKey}) {
   let ref = useRef(null);
   const [hovered, setHovered] = useState(false);
