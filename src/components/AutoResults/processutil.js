@@ -1,65 +1,73 @@
 import { FaArrowDown, FaArrowRight, FaBug, FaHome, FaPlay, FaPlusCircle, FaStop, FaStopCircle } from "react-icons/fa";
-
-//TODO: fix error with multiple works
 export function makeLineIdGroups(__state) {
-  console.log(__state)
+  console.log(__state);
   let state = [...__state];
   let newState = [];
-  for (let i = 0; i < state.length; i++) {
-    // group all things consecutively having same lineId if they are of state.by in ["line-started","batch-output","batch-error","line-executed"]
+  let i = 0;
+
+  while (i < state.length) {
     if (
-      state[i].by == "server" &&
+      state[i].by === "server" &&
       ["line-started", "batch-output", "batch-error", "line-executed"].includes(
         state[i].content.action
       )
     ) {
       let lineId = state[i].content.lineId;
-      let j = i + 1;
+      let group = [];
+      let j = i;
+
+      // Collect all consecutive entries with the same lineId
       while (
         j < state.length &&
-        state[j].by == "server" &&
-        state[j].content.lineId == lineId &&
-        [
-          "line-started",
-          "batch-output",
-          "batch-error",
-          "line-executed",
-        ].includes(state[j].content.action)
+        state[j].by === "server" &&
+        state[j].content.lineId === lineId &&
+        ["line-started", "batch-output", "batch-error", "line-executed"].includes(
+          state[j].content.action
+        )
       ) {
+        group.push(state[j]);
         j++;
       }
-      console.log("--------");
 
-      let group = state.splice(i, j - i);
-      let newgroup = {};
-      newgroup.by = "server";
-      newgroup.content = { lineId: lineId };
       let groupedCommandSubs = [];
-      console.log("groups", group);
-      for (let k = 0; k < group.length; k++) {
-        let start = 0;
-        if (group[k].content.action == "line-started") {
-          start = k;
-          while (group[k].content.action != "line-executed") {
+      let k = 0;
+
+      while (k < group.length) {
+        if (group[k].content.action === "line-started") {
+          let start = k;
+          while (k < group.length && group[k].content.action !== "line-executed") {
             k++;
           }
-          let sameCommand = {
-            inouts: group.slice(start, k + 1),
-            content: {
-              lineId: lineId,
-              action: "grouped-command",
-            },
-          };
-          groupedCommandSubs.push(sameCommand);
+          if (k < group.length && group[k].content.action === "line-executed") {
+            let sameCommand = {
+              inouts: group.slice(start, k + 1),
+              content: {
+                lineId: lineId,
+                action: "grouped-command",
+              },
+            };
+            groupedCommandSubs.push(sameCommand);
+          }
         }
+        k++;
       }
-      newgroup.sub = groupedCommandSubs;
-      newState.push(newgroup);
+
+      newState.push({
+        by: "server",
+        content: { lineId: lineId },
+        sub: groupedCommandSubs,
+      });
+
+      i = j; // Skip processed entries
+    } else {
+      newState.push(state[i]);
+      i++;
     }
-    newState.push(state[i]);
   }
+  
   return newState;
 }
+
 
 export const Icon = {
   "batch-created": <FaPlusCircle size={30} />,

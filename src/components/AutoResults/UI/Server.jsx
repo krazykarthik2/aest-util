@@ -9,12 +9,12 @@ export function ServerCommandEach(e) {
     <div className="stack relative border rounded-xl p-2">
       <div className="flex justify-between items-center gap-5 ">
         <div className="stack text-gray-600 text-xs">
-          {splitText(e.content.batchId, 9).map((e,i) => (
+          {splitText(e.content.batchId, 9).map((e, i) => (
             <span key={i}>{e}</span>
           ))}
         </div>
         {["line-started", "line-executed"].includes(e.content.action) && (
-          <div className="flex justify-between w-full h-full items-center">
+          <div className="flex justify-between w-full h-full items-center gap-5">
             <span>{Icon[e.content.action]}</span>
             <span>{e.content.output}</span>
           </div>
@@ -29,9 +29,12 @@ export function ServerCommandEach(e) {
 
 export function ServerGroupedCommand({ content, inouts }) {
   return (
-    <div className="stack border rounded-2xl p-5 gap-2">
-      {inouts.map((e,i) => (
-        <ServerCommandEach key={i} {...e} />
+    <div className="stack border rounded-2xl p-5">
+      {inouts.map((e, i) => (
+        <>
+          <ServerCommandEach key={i} {...e} />
+          {i === inouts.length - 1 || <Connector />}
+        </>
       ))}
     </div>
   );
@@ -59,15 +62,27 @@ export function ServerUnit({ by, content }) {
     </div>
   );
 }
-export function ServerSub({ by, sub, lineId, onExpand, isExpanded,onCollapse }) {
+export function ServerSub({
+  by,
+  sub,
+  lineId,
+  onExpand,
+  isExpanded,
+  onCollapse,
+}) {
   return (
     <div
-      className={`inline-flex rounded-xl gap-5 items-center bg-green-500 text-white text-sm font-bold px-4 py-3 ${isExpanded?"animate-pulse":""} `}
+      className={`inline-flex rounded-xl gap-5 items-center bg-green-500 text-white text-sm font-bold px-4 py-3 ${
+        isExpanded ? "animate-pulse" : ""
+      } `}
       role="alert"
     >
       <button
         className="expand text-3xl"
-        onClick={() => {if(!isExpanded)onExpand(sub);else onCollapse();}}
+        onClick={() => {
+          if (!isExpanded) onExpand("@" + lineId, sub);
+          else onCollapse();
+        }}
         aria-label={isExpanded ? "Collapse" : "Expand"}
       >
         {isExpanded ? "-" : "+"}
@@ -78,32 +93,36 @@ export function ServerSub({ by, sub, lineId, onExpand, isExpanded,onCollapse }) 
   );
 }
 
-
-
 export default function Server({ by, content }) {
   const IconReq = Icon[content.action] || <></>;
   return (
-    <div
-      className={`inline-flex rounded-xl gap-5 items-center text-white text-sm font-bold px-4 py-3 ${
-        content.action == "batch-error" ? "bg-red-500" : "bg-green-500"
-      } `}
-      role="alert"
-    >
-      <FaServer size={30} />
-      {IconReq}
-      {typeof(content)=="string" ? content:
-      <div className="flex justify-between gap-5">
-        <div className="stack text-gray-600 text-xs">
-          {splitText(content?.batchId, 9).map((e, i) => (
-            <span key={i}>{e}</span>
-          ))}
-        </div>
-        <div className="flex-col">
-          <span>{content.action}</span>
-          <TextGen words={content.output} />
-        </div>
+    <div className="flex justify-between w-full items-center">
+      <div className="stack text-gray-600 text-xs">
+        {splitText(content?.batchId, 9).map((e, i) => (
+          <span key={i}>{e}</span>
+        ))}
       </div>
-      }
+      <div
+        className={`inline-flex rounded-xl gap-5 items-center text-white text-sm font-bold px-4 py-3 ${
+          content.action == "batch-error" ? "bg-red-500" : "bg-green-500"
+        } `}
+        role="alert"
+      >
+        <FaServer size={30} />
+        {IconReq}
+
+        {typeof content == "string" ? (
+          <span>{content}</span>
+        ) : (
+          <div className="flex justify-between gap-5">
+            <div className="flex-col">
+              <span className="d-center w-full text-xl">{content.action}</span>
+              <TextGen words={content.output} />
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="right"></div>
     </div>
   );
 }
