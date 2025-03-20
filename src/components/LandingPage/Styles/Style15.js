@@ -3,7 +3,8 @@ import Markdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import rehypeRaw from "rehype-raw";
 import Terminal from "../../Terminal/Terminal";
-import yaml from "js-yaml";
+
+import yaml from "js-yaml"
 
 function yamlToJson(yamlInput) {
   const parsedYaml = yaml.load(yamlInput);

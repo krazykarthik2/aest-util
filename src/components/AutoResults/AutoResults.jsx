@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import FloatingDock from "../util/Aceternity/FloatingDock";
 import Pointer from "../util/Aceternity/Pointer";
 import DotBg from "./../util/Aceternity/DotBg";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 import { makeLineIdGroups } from "./processutil";
 import Alert, { AlertSub } from "./UI/Alerts";
 import Connector from "./UI/Connector";
@@ -95,9 +97,28 @@ function ExpandedBlock({ sub, expandedTitle }) {
     </motion.div>
   );
 }
+const MAX_HEIGHT = 0.95;
+const WIDTH = 4.5;
+
 const layout = [
-  { i: "log", x: 0, y: 0, w: 6, h: 5, minW: 3, minH: 3 },
-  { i: "expanded", x: 6, y: 0, w: 6, h: 5, minW: 3, minH: 3 },
+  {
+    i: "log",
+    isResizable: true,
+    x: 0,
+    y: 0,
+    h: MAX_HEIGHT,
+    w: WIDTH,
+    maxH: MAX_HEIGHT,
+  },
+  {
+    i: "expanded",
+    isResizable: true,
+    x: 5,
+    y: 0,
+    h: MAX_HEIGHT,
+    w: WIDTH,
+    maxH: MAX_HEIGHT,
+  },
 ];
 function AutoResults() {
   const location = useLocation();
@@ -107,45 +128,31 @@ function AutoResults() {
   const [expandedTitle, setExpandedTitle] = useState(null);
   const [expandedIndex, setExpandedIndex] = useState(-1);
   const [altKey, setAltKey] = useState(false);
-  const ref = React.useRef(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    const scrollUp = () => {
-      ref.current.scrollBy({ top: -50, behavior: "smooth" });
-    };
-    const scrollDown = () => {
-      ref.current.scrollBy({ top: +50, behavior: "smooth" });
-    };
-    const keyDown = (e) => {
-      if (e.key == "Alt") {
-        setAltKey(true);
-      }
-      if (e.key == "ArrowUp") {
-        scrollUp();
-      }
-      if (e.key == "ArrowDown") {
-        scrollDown();
-      }
-    };
-    const keyUp = (e) => {
-      if (e.key == "Alt") {
-        setAltKey(false);
-      }
-      if (e.key == "ArrowLeft") {
-        prevExpansion();
-      }
-      if (e.key == "ArrowRight") {
-        nextExpansion();
-      }
-    };
-    window.addEventListener("keydown", keyDown);
-    window.addEventListener("keyup", keyUp);
-    return () => {
-      window.removeEventListener("keydown", keyDown);
-      window.removeEventListener("keyup", keyUp);
-    };
-  }, [ref, expandedIndex]);
 
+  const useEffectFx =()=>{ const keyDown = (e) => {
+    if (e.key == "Alt") {
+      setAltKey(true);
+    }
+  };
+  const keyUp = (e) => {
+    if (e.key == "Alt") {
+      setAltKey(false);
+    }
+    if (e.key == "ArrowLeft") {
+      prevExpansion();
+    } 
+    if (e.key == "ArrowRight") {
+      nextExpansion();    
+    } 
+  };
+  window.addEventListener("keydown", keyDown);
+  window.addEventListener("keyup", keyUp);
+  return () => {
+    window.removeEventListener("keydown", keyDown);
+    window.removeEventListener("keyup", keyUp);
+  };
+  };
+  useEffect(useEffectFx, [ expandedIndex]);
   useEffect(() => {
     if (location.state) {
       window.state = location.state;
@@ -233,7 +240,7 @@ function AutoResults() {
     },
   ];
   return (
-    <motion.div
+    <motion.div 
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, ease: "easeOut" }}
@@ -242,11 +249,14 @@ function AutoResults() {
       <h1 className="d-center text-2xl">AUTOMATA WORKFLOW LOG ANALYSIS</h1>
       <ResponsiveGridLayout
         className="layout w-full h-full"
-        layouts={{ lg: layout }}
+        layouts={{ lg: layout, md: layout, sm: layout }}
         breakpoints={{ lg: 1200, md: 996, sm: 768 }}
-        cols={{ lg: 12, md: 10, sm: 6 }}
-        rowHeight={30}
+        cols={{ lg: 10, md: 8, sm: 6 }}
+        height={MAX_HEIGHT}
+        width={window.document.body.clientWidth * 0.9}
         draggableHandle=".drag-handle"
+        rowHeight={window.document.body.clientHeight * 0.8}
+        maxRows={10}
       >
         {/* Log Section */}
         <div key="log" className="p-4 overflow-y-auto">
@@ -257,6 +267,7 @@ function AutoResults() {
                 <Msg
                   {...msg}
                   onExpand={(title, sub) => handleExpand(i, title, sub)}
+                  onCollapse={() => handleExpand(-1)}
                   isExpanded={i === expandedIndex}
                 />
                 {i !== processedState.length - 1 && <Connector />}
@@ -270,7 +281,6 @@ function AutoResults() {
           <h2 className="drag-handle cursor-move d-center text-xl">Details</h2>
           {expanded && (
             <>
-              {" "}
               <ExpandedBlock sub={expanded} expandedTitle={expandedTitle} />
               {altKey && (
                 <div className="d-center w-full gap-10">
@@ -285,13 +295,14 @@ function AutoResults() {
                   <kbd className="rounded-xs px-5 py-2 stack d-center">
                     <span>n</span>
                     <span>next</span>
-                  </kbd>
+                  </kbd> 
                 </div>
               )}
             </>
           )}
         </div>
       </ResponsiveGridLayout>
+      <FloatingDock items={items} />
     </motion.div>
   );
 }

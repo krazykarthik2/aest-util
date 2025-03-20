@@ -31,10 +31,10 @@ export function ServerGroupedCommand({ content, inouts }) {
   return (
     <div className="stack border rounded-2xl p-5">
       {inouts.map((e, i) => (
-        <>
-          <ServerCommandEach key={i} {...e} />
+        <React.Fragment key={i}>
+          <ServerCommandEach {...e} />
           {i === inouts.length - 1 || <Connector />}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );
