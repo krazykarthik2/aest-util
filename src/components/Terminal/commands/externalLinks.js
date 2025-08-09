@@ -1,9 +1,9 @@
 const actualExternalLinks = {
   colab: "https://colab.research.google.com/",
-  gmail:"https://mail.google.com",
+  gmail: "https://mail.google.com",
   gpt: "https://chatgpt.com/",
   "web.whatsapp": "https://web.whatsapp.com/",
-  "web.figma":"https://www.figma.com/files/teams",
+  "web.figma": "https://www.figma.com/files/teams",
   instagram: "https://www.instagram.com/",
   facebook: "https://www.facebook.com/",
   twitter: "https://twitter.com/",
@@ -13,16 +13,27 @@ const actualExternalLinks = {
   netlify: "https://app.netlify.com/",
   vercel: "https://vercel.com/",
   heroku: "https://dashboard.heroku.com/",
-  "instagram.reels":"https://instagram.com/reels",
-  "daemon.download":"https://github.com/krazykarthik2/electron-ws-cmd/releases/latest/"
+  "instagram.reels": "https://instagram.com/reels",
+  "daemon.download":
+    "https://github.com/krazykarthik2/electron-ws-cmd/releases/latest/",
 };
+const actualExternalLinksNew = {
+  "new.colab": "https://colab.research.google.com/?create=true",
+  "new.github": "https://github.com/new",
+  "new.notion": "https://www.notion.so/new",
+  "new.figma": "https://www.figma.com/files/teams?new=true",
+  "new.gmail": "https://mail.google.com/mail/u/0/#inbox?compose=new",
+};
+const actualExternalLinksNewAlias = {
+  "new.mail": actualExternalLinksNew["new.gmail"],
+}
 const aliasExternalLinks = {
   chatgpt: actualExternalLinks.gpt,
-  mail:actualExternalLinks.gmail,
+  mail: actualExternalLinks.gmail,
   openai: actualExternalLinks.gpt,
   passwords: actualExternalLinks["chrome.passwords"],
   ig: actualExternalLinks.instagram,
-  "ig.reels":actualExternalLinks["instagram.reels"],
+  "ig.reels": actualExternalLinks["instagram.reels"],
   fb: actualExternalLinks.facebook,
 };
 export const externalLinks = {
