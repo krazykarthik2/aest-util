@@ -41,7 +41,7 @@
     "build": "react-scripts build && echo '/* /index.html  200' | cat >build/_redirects",
     "cicd.build": "CI=false react-scripts build && echo '/* /index.html  200' | cat >build/_redirects",
     "extension.build": "echo Make sure you 1.run npm run build before 2. have only manifest.json inside the extension folder && (if exist __extension_build__ rmdir __extension_build__ /s /q ) && xcopy build __extension_build__ /E /I && cd __extension_build__ && del _redirects && del manifest.json &&cd ..&& xcopy extension  __extension_build__ /E /I ",
-    "cicd.extension.build": "npm run cicd.build && echo Make sure you 1. have only manifest.json inside the extension folder && [ -d '__extension_build__' ] && rm -rf __extension_build__ && cp build __extension_build__ -r && cd __extension_build__ && rm -f _redirects manifest.json && cd .. && cp extension __extension_build__ -r ",
+    "cicd.extension.build": "npm run cicd.build && echo 'Make sure you have only manifest.json inside the extension folder' && rm -rf __extension_build__ && mkdir -p __extension_build__ && cp -r build/* __extension_build__/ && cd __extension_build__ && rm -f _redirects manifest.json && cd .. && cp -r extension/* __extension_build__/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
