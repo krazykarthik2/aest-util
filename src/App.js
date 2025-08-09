@@ -27,6 +27,8 @@ import { AllCommands } from "./components/Terminal/logic";
 import TerminalPage from "./components/TerminalPage/TerminalPage";
 import HandleKeyPress from "./components/util/HandleKeyPress";
 import AutoResults from "./components/AutoResults/AutoResults";
+import Spotify from "./components/Spotify";
+import SpotifyCallback from "./components/Spotify/SpotifyCallback";
 const emptyFunc = () => {};
 function App() {
   const dispatch = useDispatch();
@@ -76,6 +78,7 @@ function App() {
       <HandleKeyPress focus={focus} onTab={onTab} />
       <Routes>
         <Route path="/" element={<Navigate to="/clock?style=1" />} />
+        <Route path="/spotify_callback" element={<SpotifyCallback />} />
         <Route path="/init" element={<Navigate to="/terminal" />} />
         <Route path="/clock" element={<LandingPage {...terminalProps} />} />
         <Route path="/keyboard" element={<LandingPage {...terminalProps} />} />
