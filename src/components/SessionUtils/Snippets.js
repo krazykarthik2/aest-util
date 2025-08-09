@@ -22,16 +22,25 @@ const Snippets = {
   ...Main,
   ...Alias,
 };
-export function format$(str, args) {
-  return str?.split(" ")?.map((e) =>
-      e.startsWith("$")
-        && Number.isInteger(Number(e.slice(1)))
-          && args.length > Number(e.slice(1)) - 1
-            ? <span className="arg bg-gray-900 p-1 rounded-md">{args?.[Number(e.slice(1)) - 1]}</span>
-        : <>{e}&nbsp;</> 
-    )
-    
+export function format$str(str, args) {
+  // Match $1, "$1", '$1'
+  const regex = /"\$([0-9])"|'?\$([0-9])'?/g;
+
+  return str.replace(regex, (match, g1, g2) => {
+    const index = Number(g1 || g2) - 1;
+    const arg = args[index] ?? "";
+
+    // Preserve quotes if the original had them
+    if (match.startsWith('"') && match.endsWith('"')) {
+      return `"${arg}"`;
+    }
+    if (match.startsWith("'") && match.endsWith("'")) {
+      return `'${arg}'`;
+    }
+    return arg; // unquoted
+  });
 }
+
 export function format$str(str, args) {
   const regex = /\$[0-9]/g
   const dollarAreas = str.match(regex);
