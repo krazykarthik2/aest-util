@@ -9,7 +9,7 @@ import {
   FaCircleStop,
 } from "react-icons/fa6";
 import { FaRedo, FaTimes } from "react-icons/fa";
-import Snippets, { format$, format$str } from "../../SessionUtils/Snippets";
+import Snippets, { format$, format$str, parseArgs } from "../../SessionUtils/Snippets";
 const SnippetKeys = Object.keys(Snippets);
 
 const Snippet = ({ onSubmit }) => {
@@ -32,12 +32,11 @@ const Snippet = ({ onSubmit }) => {
     const val = value?.trim()?.split(" ")?.[0]?.replaceAll(regex, "");
     setSugg(SnippetKeys.filter((e) => e.replaceAll(regex, "").startsWith(val)));
     setArgs(
-      value
-        .split(" ")
-        .filter((e) => e)
-        .slice(1)
+      parseArgs(value).slice(1).map((e) => e.trim()).filter((e) => e !== "")
     );
   }, [value]);
+
+
   return (
     <form
       className="d-center stack gap-3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -61,7 +60,7 @@ const Snippet = ({ onSubmit }) => {
       </div>
       {isFocused && value && (
         <div className="suggestions flex stack items-start text-lg w-full bg-gray-600 rounded-md p-2">
-          {sugg?.map((e) => (
+          {sugg?.sort().map((e) => (
             <button
               className="w-full flex items-center gap-2"
               type="button"
@@ -103,6 +102,19 @@ const Style12 = ({ hours, minutes, props, dispatch }) => {
     const temp = [...outs, ...errs].sort((a, b) => a.timestamp - b.timestamp);
     setPresent({ before: temp.slice(0, -1), last: temp.at(-1) });
   }, [outs, errs]);
+  useEffect(() => {
+    function handleKeyDown(e) {
+      // Ctrl + P
+      if (e.ctrlKey && e.key.toLowerCase() === "p") {
+        e.preventDefault(); // Stop browser print dialog
+        // just clear console by doing cls
+        handleCommand("cls");
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const navigate = useNavigate();
   const lastRef = React.useRef(null);
