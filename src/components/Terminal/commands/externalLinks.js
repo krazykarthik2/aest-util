@@ -65,4 +65,7 @@ const aliasExternalLinks = {
 export const externalLinks = {
   ...actualExternalLinks,
   ...aliasExternalLinks,
+  ...actualExternalLinksNew,
+  ...actualExternalLinksNewAlias,
+  ...downloadLinks
 };
