@@ -62,8 +62,8 @@ const Style1 = ({ hours, minutes, props, dispatch }) => {
             props?.command?.trim()?.split(" ")?.[0] in Icon) ? (
             <Recommend
               value={props?.recommend}
-              cmd={props?.command?.trim()?.split(" ")?.[0]}
-              show={props?.command?.split(" ")?.filter((e) => e)?.length == 1}
+              cmd={props?.command?.toLowerCase()?.trim()?.split(" ")?.[0]}
+              show={props?.command?.toLowerCase()?.split(" ")?.filter((e) => e)?.length == 1}
             />
           ) : (
             <div className="w-full h-full d-center">

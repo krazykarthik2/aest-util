@@ -52,7 +52,7 @@ function App() {
   };
   useEffect(() => {
     const _recom = command?.trim()
-      ? AllCommands.filter((c) => c?.startsWith(command?.trim()))
+      ? AllCommands.filter((c) => c?.startsWith(command?.toLowerCase()?.trim()))
       : [];
     setRecommend(_recom);
   }, [command]);
