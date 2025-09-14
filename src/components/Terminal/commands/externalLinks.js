@@ -29,7 +29,6 @@ const downloadLinks = {
     "https://www.google.com/chrome/browser/desktop/index.html",
   "download.firefox":
     "https://www.mozilla.org/en-US/firefox/new/", 
-
   "download.vscode":
     "https://code.visualstudio.com/Download",
   "download.nodejs": "https://nodejs.org/en/download/",

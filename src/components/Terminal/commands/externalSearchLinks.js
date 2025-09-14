@@ -87,8 +87,19 @@ const aliasExternalSearchLinks = {
   icons: actualExternalSearchLinks.icon,
   "react-icons": actualExternalSearchLinks["react-icon"],
 };
+const externalDownloadLinks = {
+  "download.gh": (...args) => args.length
+    ? "https://download-directory.github.io/?url=" + args.join("")
+    : "https://download-directory.github.io",
+}
+const aliasExternalDownloadLinks = {
+  "download.github": externalDownloadLinks["download.gh"],
+}
+
 export const externalSearchLinks = {
   ...actualExternalSearchLinks,
+  ...externalDownloadLinks,
+  ...aliasExternalDownloadLinks,
   ...aliasExternalSearchLinks,
   ...appLinks,
 };
